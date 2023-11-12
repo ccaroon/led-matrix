@@ -14,12 +14,17 @@ class GameOfLife:
     def __init__(self, display):
         self.__display = display
 
-        self.__board1 = displayio.Bitmap(display.width, display.height, 2)
-        self.__board2 = displayio.Bitmap(display.width, display.height, 2)
+        self.__width = display.width
+        self.__height = display.height
+        # self.__width = 32
+        # self.__height = 32
+
+        self.__board1 = displayio.Bitmap(self.__width, self.__height, 2)
+        self.__board2 = displayio.Bitmap(self.__width, self.__height, 2)
 
         palette = displayio.Palette(2)
         palette[self.DEAD] = 0x000000
-        palette[self.ALIVE] = 0x0000ff
+        palette[self.ALIVE] = 0x00ff00
 
         # TileGrid & Group1
         grid1 = displayio.TileGrid(self.__board1, pixel_shader=palette)
@@ -37,12 +42,12 @@ class GameOfLife:
         }
 
         self.__generation = 0
-        self.__seed_board(self.__board1)
+        self.__seed_board(self.__board1, percent=25)
         self.__show()
 
     def __seed_board(self, board, percent=50):
-        width = board.width
-        height = board.height
+        width = self.__width
+        height = self.__height
         count = int(width * height * (percent/100))
         for _ in range(count):
             x = random.randint(0, width-1)
@@ -52,8 +57,8 @@ class GameOfLife:
     def __count_live_neighbors(self, board, cell:tuple):
         x = cell[0]
         y = cell[1]
-        width = board.width
-        height = board.height
+        width = self.__width
+        height = self.__height
         count = 0
 
         for offset in self.NEIGHBOR_OFFSETS:
@@ -62,7 +67,7 @@ class GameOfLife:
 
             if (nx >= 0 and nx < width) and (ny >= 0 and ny < height):
                 count += 1 if board[nx,ny] == self.ALIVE else 0
-                # print(f"({x},{y}) - ({nx},{ny})...({board[nx][ny]})")
+                # print(f"({x},{y}) - ({nx},{ny})...({board[nx,ny]})")
 
         # if count > 0:
         #     print(f"({x},{y})...{count}")
@@ -88,7 +93,7 @@ class GameOfLife:
                 # print(f"{x},{y}: ALIVE --> DEAD")
             # else:
             #     print(f"{x},{y} - [{count}] ALIVE --> ?????")
-        elif state == self.fDEAD:
+        elif state == self.DEAD:
             # Any dead cell with exactly three live neighbours becomes a live cell
             if count == 3:
                 board[x,y] = self.ALIVE
@@ -101,21 +106,21 @@ class GameOfLife:
 
     def __update_groups(self):
         if self.__generation % 2 == 0:
-            self.__groups["live"] = self.__board1
-            self.__groups["standby"] = self.__board2
+            self.__groups["live"] = self.__group1
+            self.__groups["standby"] = self.__group2
         else:
-            self.__groups["live"] = self.__board2
-            self.__groups["standby"] = self.__board1
+            self.__groups["live"] = self.__group2
+            self.__groups["standby"] = self.__group1
 
     def compute_generation(self):
-        old_board = self.__groups["standby"][0].bitmap
-        live_board = self.__groups["live"][0].bitmap
-        width = old_board.width
-        height = old_board.height
+        old_board = self.__groups["live"][0].bitmap
+        new_board = self.__groups["standby"][0].bitmap
+        width = self.__width
+        height = self.__height
         for y in range(height):
             for x in range(width):
                 count = self.__count_live_neighbors(old_board, (x,y))
-                self.__set_cell(live_board, (x,y), old_board[x,y], count)
+                self.__set_cell(new_board, (x,y), old_board[x,y], count)
 
         self.__generation += 1
 
@@ -123,6 +128,7 @@ class GameOfLife:
         self.__show()
 
     def __show(self):
+        print(self.__generation)
         self.__display.root_group = self.__groups["live"]
 
 
