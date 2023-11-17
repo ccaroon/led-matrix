@@ -3,7 +3,7 @@ import displayio
 import rgbmatrix
 import framebufferio
 
-def init_32x64():
+def init_64x32():
     displayio.release_displays()
     matrix = rgbmatrix.RGBMatrix(
         width=64, bit_depth=4,

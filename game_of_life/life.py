@@ -1,6 +1,8 @@
 import displayio
 import random
 
+import game_of_life.patterns as patterns
+
 class GameOfLife:
     DEAD  = 0
     ALIVE = 1
@@ -42,10 +44,34 @@ class GameOfLife:
         }
 
         self.__generation = 0
-        self.__seed_board(self.__board1, percent=25)
+        # self.__seed_randomly(self.__board1, percent=25)
+        pattern_name = random.choice(list(patterns.PATTERNS.keys()))
+        pattern = patterns.PATTERNS[pattern_name]
+        self.__seed_from_pattern(self.__board1, pattern, center=True)
         self.__show()
 
-    def __seed_board(self, board, percent=50):
+    def __seed_from_pattern(self, board, pattern, offset:tuple=(0,0), center=False):
+        pat_width = pattern["width"]
+        pat_height = pattern["height"]
+
+        if pat_width > self.__width or pat_height > self.__height:
+            raise ValueError(f"Board size to small for pattern. Min Size: ({pat_width}x{pat_height})")
+
+        # Compute offset to center pattern on board
+        if center:
+            off_x = (self.__width // 2) - (pat_width // 2)
+            off_y = (self.__height // 2) - (pat_height // 2)
+        else:
+            off_x = offset[0]
+            off_y = offset[1]
+
+        bitmap = pattern["bitmap"]
+        for (idx, state) in enumerate(bitmap):
+            x = idx % pat_width
+            y = idx // pat_width
+            board[x+off_x, y+off_y] = self.ALIVE if state else self.DEAD
+
+    def __seed_randomly(self, board, percent=50):
         width = self.__width
         height = self.__height
         count = int(width * height * (percent/100))
@@ -128,7 +154,7 @@ class GameOfLife:
         self.__show()
 
     def __show(self):
-        print(self.__generation)
+        # print(self.__generation)
         self.__display.root_group = self.__groups["live"]
 
 

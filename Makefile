@@ -7,6 +7,7 @@ usage:
 	@echo "* shell"
 	@echo "* upload-as-main FILE=<file>"
 	@echo "* upload-file FILE=<file>"
+	@echo "* install-gol"
 	@echo "* secrets"
 
 shell:
