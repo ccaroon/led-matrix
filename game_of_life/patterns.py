@@ -99,11 +99,11 @@ __CNC_BOX = {
 
 PATTERNS = {
     "acorn": __ACORN,
-    "blinker": __BLINKER,
+    # "blinker": __BLINKER,
     "bunnies": __BUNNIES,
     "conway": __CONWAY,
-    "glider": __GLIDER,
-    "pulsar": __PULSAR,
+    # "glider": __GLIDER,
+    # "pulsar": __PULSAR,
     "r-pentomino": __R_PENTOMINO,
-    "cnc-box": __CNC_BOX
+    # "cnc-box": __CNC_BOX
 }
