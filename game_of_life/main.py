@@ -3,7 +3,7 @@ import led_matrix
 
 from game_of_life.life import GameOfLife
 
-MAX_GENS = 250
+MAX_GENS = 500
 
 display = led_matrix.init_64x64(bit_depth=1)
 game = GameOfLife(display)
