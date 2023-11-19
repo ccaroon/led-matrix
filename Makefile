@@ -37,6 +37,12 @@ install-gol:
 	cp lib/led_matrix.py /media/$(USER)/CIRCUITPY/lib
 	cp -a game_of_life /media/$(USER)/CIRCUITPY/
 
+install-info-panel:
+	cp info_panel/main.py /media/$(USER)/CIRCUITPY/main.py
+	cp lib/led_matrix.py /media/$(USER)/CIRCUITPY/lib
+	cp lib/my_wifi.py /media/$(USER)/CIRCUITPY/lib
+	cp -a info_panel /media/$(USER)/CIRCUITPY/
+
 secrets: lib/secrets.py
 
 lib/secrets.py: .secrets
