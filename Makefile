@@ -38,9 +38,13 @@ install-gol:
 	cp -a game_of_life /media/$(USER)/CIRCUITPY/
 
 install-info-panel:
+	# --- Main
 	cp info_panel/main.py /media/$(USER)/CIRCUITPY/main.py
+	# --- Libs
+	cp lib/chronos.py /media/$(USER)/CIRCUITPY/lib
 	cp lib/led_matrix.py /media/$(USER)/CIRCUITPY/lib
 	cp lib/my_wifi.py /media/$(USER)/CIRCUITPY/lib
+	# --- Package
 	cp -a info_panel /media/$(USER)/CIRCUITPY/
 
 secrets: lib/secrets.py
