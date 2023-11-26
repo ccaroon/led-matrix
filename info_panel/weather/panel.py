@@ -66,15 +66,15 @@ class WeatherPanel(displayio.Group):
         d2 = number % 10
 
         if d0 > 0:
-            digit = Glyph.get(str(d0))
+            digit = Glyph.get(d0)
             self.__draw_digit(0*dwidth,0,digit)
 
         if d1 > 0:
-            digit = Glyph.get(str(d1))
+            digit = Glyph.get(d1)
             self.__draw_digit(1*dwidth,0,digit)
 
         if d2 > 0:
-            digit = Glyph.get(str(d2))
+            digit = Glyph.get(d2)
             self.__draw_digit(2*dwidth,0,digit)
 
     def __draw_digit(self, x, y, glyph):

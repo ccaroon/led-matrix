@@ -17,9 +17,9 @@ class DebugPanel(displayio.Group):
     def bitmap(self):
         return self.__bitmap
 
-    def draw_glyph(self, glyph):
+    def draw_glyph(self, x, y, glyph):
         for data in glyph:
-            self.__bitmap[data["col"],data["row"]] = data["color"]
+            self.__bitmap[data["col"]+x,data["row"]+y] = data["color"]
 
     def update(self):
         pass

@@ -32,9 +32,6 @@ bin_clock = BinaryClock(16,0)
 debug = DebugPanel(0,16)
 # debug.bitmap[0,0] = 1
 
-digit = Glyph.get("8")
-debug.draw_glyph(digit)
-
 main_group = displayio.Group()
 main_group.append(weather)
 main_group.append(bin_clock)
@@ -46,6 +43,9 @@ while True:
     # print(f"--> tick:{count}")
     for panel in main_group:
         panel.update()
+
+    digit = Glyph.get(count % 9)
+    debug.draw_glyph(6,5, digit)
 
     count += 1
     time.sleep(1)
