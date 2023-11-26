@@ -10,8 +10,8 @@ class MyWiFi:
 
     @classmethod
     def connect(cls):
-        essid = os.getenv("WIFI_SSID")
-        passwd = os.getenv("WIFI_PASSWORD")
+        essid = os.getenv("wifi.ssid")
+        passwd = os.getenv("wifi.password")
 
         print(f"Trying '{essid}'...")
         wifi.radio.connect(essid, passwd)
@@ -22,9 +22,9 @@ class MyWiFi:
                 pool,
                 ssl.create_default_context()
             )
-            print("Connected to '%s'" % (essid))
+            print(f"Connected to '{essid}'")
         else:
-            print("Failed to connect to '%s'" % (essid))
+            print(f"Failed to connect to '{essid}'")
 
     @classmethod
     def autoconnect(cls):
@@ -38,9 +38,9 @@ class MyWiFi:
         if wifi.radio.connected:
             resp = cls.REQUESTS.get(url)
             if resp.status_code == 200:
-                return resp.json()
+                print(resp.json())
             else:
-                return "Error GET'ting '%s': [%d]" % (url, resp.status_code)
+                print(f"Error GET'ting '{url}': [{resp.status_code}]")
         else:
             print("Not Connected")
 
