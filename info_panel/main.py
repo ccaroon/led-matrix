@@ -44,7 +44,7 @@ while True:
     for panel in main_group:
         panel.update()
 
-    digit = Glyph.get(count % 9)
+    digit = Glyph.get(count % 10, set_hint="fancy_digit")
     debug.draw_glyph(6,5, digit)
 
     count += 1

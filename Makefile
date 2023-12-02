@@ -8,7 +8,7 @@ usage:
 	@echo "* upload-as-main FILE=<file>"
 	@echo "* upload-file FILE=<file>"
 	@echo "* install-gol"
-	@echo "* install-info-panel:
+	@echo "* install-info-panel"
 	# @echo "* secrets"
 
 shell:
@@ -49,6 +49,7 @@ install-info-panel: /media/$(USER)/CIRCUITPY/settings.toml
 	cp lib/chronos.py /media/$(USER)/CIRCUITPY/lib
 	cp lib/led_matrix.py /media/$(USER)/CIRCUITPY/lib
 	cp lib/my_wifi.py /media/$(USER)/CIRCUITPY/lib
+	cp -a lib/colors /media/$(USER)/CIRCUITPY/lib
 	# --- Package
 	cp -a info_panel /media/$(USER)/CIRCUITPY/
 

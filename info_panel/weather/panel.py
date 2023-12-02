@@ -2,11 +2,19 @@ import time
 import displayio
 import os
 
+from lib.colors.color import Color
+# **MUST** set the ORDER (iff not normal) before importing other Color classes
+Color.ORDER = ("R", "B", "G")
+from lib.colors.temperature import Temperature
 from info_panel.glyph import Glyph
 
 from my_wifi import MyWiFi
 from aio import AdafruitIO
 
+# TODO:
+# * [ ] old data
+# * [ ] data retrieval error
+# * [ ] humidity
 # -----------------------------------------------------------------------------
 class Reading:
     name = None
@@ -26,18 +34,17 @@ class Reading:
 class WeatherPanel(displayio.Group):
 
     # Update interval
-    INTERVAL = 1 * 60
+    INTERVAL = 5 * 60
 
     def __init__(self, x, y):
         super().__init__(x=x, y=y)
 
-        self.__bitmap = displayio.Bitmap(16, 16, 2)
-        palette = displayio.Palette(2)
-        palette[0] = 0x000000
-        palette[1] = 0x0000ff
-
-        grid = displayio.TileGrid(self.__bitmap, pixel_shader=palette)
-
+        self.__palette = Temperature.palette()
+        self.__bitmap = displayio.Bitmap(16, 16, self.__palette.num_colors)
+        grid = displayio.TileGrid(
+            self.__bitmap,
+            pixel_shader=self.__palette.dio_palette
+        )
         self.append(grid)
 
         self.__last_update = 0
@@ -46,6 +53,18 @@ class WeatherPanel(displayio.Group):
             "weather-station",
             { "username": os.getenv("aio.username"), "key": os.getenv("aio.key")}
         )
+
+    def __border(self, color):
+        color_idx = self.__palette.from_color(color)
+        # Top/Bottom
+        for x in range(0, self.__bitmap.width):
+            self.__bitmap[x,0] = color_idx
+            self.__bitmap[x, self.__bitmap.height-1] = color_idx
+
+        # Left/Right
+        for y in range(0, self.__bitmap.height):
+            self.__bitmap[0, y] = color_idx
+            self.__bitmap[self.__bitmap.width-1, y] = color_idx
 
     def __get_data(self, name):
         resp = self.__aio.get_data(name)
@@ -58,39 +77,71 @@ class WeatherPanel(displayio.Group):
             )
         return data
 
-    # TODO: implement me
-    def __display_number(self, x, y, number):
-        dwidth = 3
-        d0 = number // 100
+    def __display_number2(self, x, y, number, color):
         d1 = number // 10
         d2 = number % 10
 
-        if d0 > 0:
-            digit = Glyph.get(d0)
-            self.__draw_digit(0*dwidth,0,digit)
+        digit = Glyph.get(d1)
+        self.__draw_digit((0*digit.width)+x, y, digit, color)
 
-        if d1 > 0:
-            digit = Glyph.get(d1)
-            self.__draw_digit(1*dwidth,0,digit)
+        digit = Glyph.get(d2)
+        self.__draw_digit((1*digit.width)+x, y, digit, color)
 
-        if d2 > 0:
-            digit = Glyph.get(d2)
-            self.__draw_digit(2*dwidth,0,digit)
+    # def __display_number3(self, x, y, number, color):
+    #     d0 = number // 100
+    #     d1 = number // 10 if number < 100 else (number-100) // 10
+    #     d2 = number % 10
 
-    def __draw_digit(self, x, y, glyph):
+    #     if number >= 100:
+    #         digit = Glyph.get(d0)
+    #         self.__draw_digit((0*digit.width)+x, y, digit, color)
+
+    #     if number >= 10:
+    #         digit = Glyph.get(d1)
+    #         self.__draw_digit((1*digit.width)+x, y, digit, color)
+
+    #     if number >= 0:
+    #         digit = Glyph.get(d2)
+    #         self.__draw_digit((2*digit.width)+x, y, digit, color)
+
+    def __draw_digit(self, x, y, glyph, color):
+        color_idx = self.__palette.from_color(color)
         for data in glyph:
-            self.__bitmap[data["col"]+x, data["row"]+y] = data["color"]
+            palette_idx = color_idx if data["on"] else 0
+            self.__bitmap[data["x"]+x, data["y"]+y] = palette_idx
 
     def __display(self):
+        # Current Temperature
         reading = self.__get_data("temperature")
-        print(reading)
-        self.__display_number(0,0, reading.value)
+        color = Temperature.from_temp(reading.value)
+        print(f"{reading} ({color.name} => {color})")
+
+        # 6 == number width (both digits)
+        # center it on x
+        x = (self.__bitmap.width // 2) - (6 // 2)
+
+        self.__border(color)
+        self.__display_number2(x,1, reading.value, color)
+
+        # Low Temperature
+        reading = self.__get_data("temperature-low")
+        color = Temperature.from_temp(reading.value)
+        self.__display_number2(1,9, reading.value, color)
+
+        # High Temperature
+        reading = self.__get_data("temperature-high")
+        color = Temperature.from_temp(reading.value)
+        self.__display_number2(15-6,9, reading.value, color)
 
     def update(self):
         now = time.time()
         if now - self.__last_update > self.INTERVAL:
             self.__last_update = now
             self.__display()
+
+    # def update(self):
+    #     self.__display_number(0, 0, self.__count)
+    #     self.__count += 1
 
 
 
