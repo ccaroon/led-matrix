@@ -5,7 +5,7 @@ import os
 from lib.colors.color import Color
 # **MUST** set the ORDER (iff not normal) before importing other Color classes
 Color.ORDER = ("R", "B", "G")
-from lib.colors.temperature import Temperature
+from lib.colors.weather import Weather
 from info_panel.glyph import Glyph
 
 from my_wifi import MyWiFi
@@ -15,6 +15,7 @@ from aio import AdafruitIO
 # * [ ] old data
 # * [ ] data retrieval error
 # * [ ] humidity
+# * [ ] combine color sets and Palette? I.e. color set subclasses of Palette?
 # -----------------------------------------------------------------------------
 class Reading:
     name = None
@@ -34,12 +35,15 @@ class Reading:
 class WeatherPanel(displayio.Group):
 
     # Update interval
-    INTERVAL = 5 * 60
+    UPDATE_INTERVAL = 5 * 60  # 5 mins
+    OLD_INTERVAL    = 10 * 60 # 10 mins
+    # 200 degrees -> "really_hot" => RED
+    ERROR_COLOR     = Weather.from_temp(200)
 
     def __init__(self, x, y):
         super().__init__(x=x, y=y)
 
-        self.__palette = Temperature.palette()
+        self.__palette = Weather.palette()
         self.__bitmap = displayio.Bitmap(16, 16, self.__palette.num_colors)
         grid = displayio.TileGrid(
             self.__bitmap,
@@ -68,14 +72,14 @@ class WeatherPanel(displayio.Group):
 
     def __get_data(self, name):
         resp = self.__aio.get_data(name)
-        data = None
+        reading = None
         if resp["success"]:
-            data = Reading(
+            reading = Reading(
                 name,
                 int(resp["results"][0]["value"]),
                 resp["age"]
             )
-        return data
+        return reading
 
     def __display_number2(self, x, y, number, color):
         d1 = number // 10
@@ -110,32 +114,56 @@ class WeatherPanel(displayio.Group):
             palette_idx = color_idx if data["on"] else 0
             self.__bitmap[data["x"]+x, data["y"]+y] = palette_idx
 
+    def __draw_humidity(self, value):
+        color = Weather.from_humidity(value)
+        # print(f"{value}% => ({color})")
+
+        # Compute line length
+        # 7 levels = 100/7 == 14.286 * 2 lights / level
+        line_len =  ((value // 14.286) + 1) * 2
+
+        # Get color
+        color_idx = self.__palette.from_color(color)
+
+        # Draw line centered on y=7
+        start_x = (self.__bitmap.width // 2) - (line_len // 2)
+        for x in range(int(start_x), int(line_len)+1):
+            self.__bitmap[x,7] = color_idx
+
     def __display(self):
         # Current Temperature
         reading = self.__get_data("temperature")
-        color = Temperature.from_temp(reading.value)
-        print(f"{reading} ({color.name} => {color})")
+        color = Weather.from_temp(reading.value)
+        # print(f"{reading.value} - {reading.age} > {self.OLD_INTERVAL} ({color})")
 
         # 6 == number width (both digits)
         # center it on x
         x = (self.__bitmap.width // 2) - (6 // 2)
+        self.__display_number2(x, 1, reading.value, color)
 
-        self.__border(color)
-        self.__display_number2(x,1, reading.value, color)
+        # Border - Color based on current temperature
+        # ...or ERROR_COLOR if data is "old"
+        border_color = self.ERROR_COLOR if reading.age >= self.OLD_INTERVAL else color
+        self.__border(border_color)
 
         # Low Temperature
         reading = self.__get_data("temperature-low")
-        color = Temperature.from_temp(reading.value)
-        self.__display_number2(1,9, reading.value, color)
+        color = Weather.from_temp(reading.value)
+        self.__display_number2(1, 9, reading.value, color)
 
         # High Temperature
         reading = self.__get_data("temperature-high")
-        color = Temperature.from_temp(reading.value)
-        self.__display_number2(15-6,9, reading.value, color)
+        color = Weather.from_temp(reading.value)
+        self.__display_number2(15-6, 9, reading.value, color)
+
+        # Humidity
+        reading = self.__get_data("humidity")
+        self.__draw_humidity(reading.value)
+
 
     def update(self):
         now = time.time()
-        if now - self.__last_update > self.INTERVAL:
+        if now - self.__last_update > self.UPDATE_INTERVAL:
             self.__last_update = now
             self.__display()
 
