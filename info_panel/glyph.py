@@ -1,3 +1,4 @@
+import info_panel.glyphs.alpha as alpha
 import info_panel.glyphs.digit as digit
 import info_panel.glyphs.fancy_digit as fancy_digit
 
@@ -21,7 +22,9 @@ class Glyph:
             if set_hint == "fancy_digit":
                 glyph_set = fancy_digit
         else:
-            if glyph_name in digit.DATA.keys():
+            if glyph_name in alpha.DATA.keys():
+                glyph_set = alpha
+            elif glyph_name in digit.DATA.keys():
                 glyph_set = digit
             elif glyph_name in fancy_digit.DATA.keys():
                 glyph_set = fancy_digit

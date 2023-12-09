@@ -4,7 +4,7 @@ from lib.colors.palette import Palette
 class Weather:
     BLACK = Color(0x000000, name="black")
     TEMP_RANGES = (
-        { "color": BLACK,                               "range": range(0,0)    },
+        # { "color": BLACK,                               "range": range(0,0)    },
         { "color": Color(0xffffff, name="freezing"),    "range": range(0,26)   },
         { "color": Color(0x2222ff, name="really_cold"), "range": range(26,33)  },
         { "color": Color(0x0077ff, name="cold"),        "range": range(33,56)  },
@@ -16,7 +16,7 @@ class Weather:
     )
 
     HUMD_RANGES = (
-        { "color": BLACK,                              "range": range(0,0)    },
+        # { "color": BLACK,                              "range": range(0,0)    },
         { "color": Color(0xFFFFFF, name="dry"),        "range": range(0,26)   },
         { "color": Color(0x8080FF, name="damp"),       "range": range(26,51)  },
         { "color": Color(0x4040FF, name="wet"),        "range": range(51,76)  },
@@ -24,9 +24,10 @@ class Weather:
     )
 
     @classmethod
-    def palette(self):
-        colors = [item["color"] for item in self.TEMP_RANGES]
-        colors.extend([item["color"] for item in self.HUMD_RANGES])
+    def palette(cls):
+        colors = [cls.BLACK]
+        colors.extend([item["color"] for item in cls.TEMP_RANGES])
+        colors.extend([item["color"] for item in cls.HUMD_RANGES])
         return Palette(colors)
 
     @classmethod
