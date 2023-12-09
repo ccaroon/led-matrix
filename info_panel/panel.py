@@ -50,7 +50,7 @@ class Panel(displayio.Group):
 
     def _draw_number3(self, x, y, number, color):
         d0 = number // 100
-        d1 = number // 10 if number < 100 else (number-100) // 10
+        d1 = number // 10 if number < 100 else (number-(d0*100)) // 10
         d2 = number % 10
 
         digit = Glyph.get(d0)

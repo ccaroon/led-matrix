@@ -15,5 +15,6 @@ class DebugPanel(Panel):
         self._border(self.__colors[3])
 
     def _update_display(self):
+        # print(f"Debugger -> {self.__count}")
         self._draw_number3(3, 5, self.__count % 999, self.__colors[0])
         self.__count += 1
