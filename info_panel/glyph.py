@@ -1,6 +1,4 @@
-import info_panel.glyphs.alpha as alpha
-import info_panel.glyphs.digit as digit
-import info_panel.glyphs.fancy_digit as fancy_digit
+import info_panel.glyphs.alpha_num as alpha_num
 
 class Glyph:
     # data == [{"x", "y", "on"}]
@@ -15,21 +13,18 @@ class Glyph:
     @classmethod
     def get(cls, name, set_hint=None):
         glyph_set = None
-        glyph_name = str(name)
+        glyph_name = str(name).upper()
 
         # TODO: this is a hack...make it better
         if set_hint:
-            if set_hint == "fancy_digit":
-                glyph_set = fancy_digit
+            pass
+            # if set_hint == "fancy_digit":
+            #     glyph_set = fancy_digit
         else:
-            if glyph_name in alpha.DATA.keys():
-                glyph_set = alpha
-            elif glyph_name in digit.DATA.keys():
-                glyph_set = digit
-            elif glyph_name in fancy_digit.DATA.keys():
-                glyph_set = fancy_digit
+            if glyph_name in alpha_num.DATA.keys():
+                glyph_set = alpha_num
             else:
-                raise ValueError(f"Unknown Glyph Set: {name}")
+                raise ValueError(f"Unknown Glyph: '{name}'")
 
         glyph_data = cls.__get_data(
             glyph_set.TEMPLATE,

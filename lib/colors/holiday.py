@@ -1,18 +1,18 @@
-from machine import RTC
-
+from lib.dates import Dates
 from lib.colors.color import Color
 from lib.colors.color_factory import ColorFactory
+from lib.colors.palette import Palette
 
 class Holiday:
-    __RTC = RTC()
-
-    TODAY = 0
+    BLACK = Color(0x000000, name="black")
 
     PIPER_BDAY = 126
     CRAIG_BDAY = 219
     CATE_BDAY = 823
     NATE_BDAY = 818
     PICASSO_BDAY = 1025
+
+    CNC_ANNIV = 316
 
     NEWYEAR = 101
     VALENTINES = 214
@@ -21,15 +21,15 @@ class Holiday:
     HALLOWEEN = 1031
     # Not *exactly* the correct day, but close enough :)
     THANKSGIVING = 1125
+    CHRISTMAS_EVE = 1224
     CHRISTMAS = 1225
 
     HOLIDAYS = {
-        # For Testing Purposes
-        "test_set": (
-            ColorFactory.hex("0xFF0000"),
-            ColorFactory.hex("0x00FF00"),
-            ColorFactory.hex("0x0000FF"),
-            ColorFactory.hex("0xFFFFFF")
+        "just_another_day": (
+            ColorFactory.get("green"),
+            ColorFactory.get("blue"),
+            ColorFactory.get("yellow"),
+            ColorFactory.get("white")
         ),
         "picasso_bday": (
             ColorFactory.get("red"),
@@ -40,13 +40,13 @@ class Holiday:
         "new_years": (
             ColorFactory.get("white"),
             ColorFactory.get("yellow"),
-            ColorFactory.hex("0xAF00FF"), # purple
-            ColorFactory.hex("0x0096C8")  # blue
+            Color(0xAF00FF, name="ny_purple"),
+            Color(0x0096C8, name="ny_blue")
         ),
         "valentines": (
             ColorFactory.get("red"),
             ColorFactory.get("white"),
-            ColorFactory.hex("0xFF4545"), # pink
+            Color(0xFF4545, name="vd_pink"),
             ColorFactory.get("black")
         ),
         "birthday": (
@@ -57,9 +57,9 @@ class Holiday:
         ),
         "st_patricks": (
             ColorFactory.get("green"),
-            ColorFactory.hex("0x28FF28"), # light-green
+            Color(0x28FF28, name="sp_green"),
             ColorFactory.get("white"),
-            ColorFactory.hex("0x5ecc09")
+            Color(0x5ecc09, name="sp_4")
         ),
         "independence": (
             ColorFactory.get("red"),
@@ -83,52 +83,55 @@ class Holiday:
             ColorFactory.get("white"),
             ColorFactory.get("green"),
             ColorFactory.get("red"),
-            ColorFactory.hex("0x4B96FF")  # light-blue
+            Color(0x4B96FF, name="cmas_blue")
         ),
     }
 
     HOLIDAY_MAP = {
-        TODAY: "test_set",
         CRAIG_BDAY: "birthday",
         CATE_BDAY: "birthday",
         NATE_BDAY: "birthday",
         PIPER_BDAY: "birthday",
         PICASSO_BDAY: "picasso_bday",
+        CNC_ANNIV: "birthday",
         NEWYEAR: "new_years",
         VALENTINES: "valentines",
         STPATTY: "st_patricks",
         INDYPENDY: "independence",
         HALLOWEEN: "halloween",
         THANKSGIVING: "thanksgiving",
-        CHRISTMAS: "christmas"
+        CHRISTMAS_EVE: "christmas",
+        CHRISTMAS: "christmas",
     }
 
     @classmethod
-    def get(cls, name, brightness=Color.DEFAULT_BRIGHTNESS):
+    def palette(cls):
+        colors = [cls.BLACK]
+
+        for color_set in cls.HOLIDAYS.values():
+            colors.extend([clr for clr in color_set])
+
+        return Palette(colors)
+
+    @classmethod
+    def get(cls, name):
         if name == "current":
-            colors = cls.get_current(brightness)
+            colors = cls.get_current()
         else:
             colors = cls.HOLIDAYS.get(name)
-            if colors is None:
-                raise ValueError("Unknown Holiday: '%s'" % name)
 
-        if colors is not None:
-            for color in colors:
-                color.brightness = brightness
+        if colors is None:
+            raise ValueError(f"Unknown Holiday: '{name}'")
 
         return colors
 
     @classmethod
-    def get_current(cls, brightness=Color.DEFAULT_BRIGHTNESS):
-        # date == year, month, day, weekday, hour, minute, second, microsecond
-        now = cls.__RTC.datetime()
-        month = now[1]
-        day = now[2]
-        date_code = (month * 100) + day
+    def get_current(cls):
+        date_code = Dates.date_code()
         color_set = None
 
-        name = cls.HOLIDAY_MAP.get(date_code, None)
+        name = cls.HOLIDAY_MAP.get(date_code, "just_another_day")
         if name is not None:
-            color_set = cls.get(name, brightness)
+            color_set = cls.get(name)
 
         return color_set

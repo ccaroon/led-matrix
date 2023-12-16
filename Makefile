@@ -46,6 +46,7 @@ install-info-panel: /media/$(USER)/CIRCUITPY/settings.toml
 	cp info_panel/main.py /media/$(USER)/CIRCUITPY/main.py
 	# --- Libs
 	cp lib/aio.py /media/$(USER)/CIRCUITPY/lib
+	cp lib/dates.py /media/$(USER)/CIRCUITPY/lib
 	cp lib/chronos.py /media/$(USER)/CIRCUITPY/lib
 	cp lib/led_matrix.py /media/$(USER)/CIRCUITPY/lib
 	cp lib/my_wifi.py /media/$(USER)/CIRCUITPY/lib

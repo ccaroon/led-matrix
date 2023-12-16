@@ -9,12 +9,16 @@ class DebugPanel(Panel):
     def __init__(self, x, y):
         super().__init__(x, y, SeasonColors.palette())
 
-        self.__colors = SeasonColors.get("spring")
+        self.__colors = SeasonColors.get("current")
         self.__count = 0
 
         self._border(self.__colors[3])
 
     def _update_display(self):
         # print(f"Debugger -> {self.__count}")
-        self._draw_number3(3, 5, self.__count % 999, self.__colors[0])
+        msg = self.__count % 9999
+        self._draw_string(2, 5,
+            f"{msg:04d}",
+            self.__colors[0]
+        )
         self.__count += 1

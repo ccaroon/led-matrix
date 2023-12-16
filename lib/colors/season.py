@@ -1,5 +1,4 @@
-import time
-
+from lib.dates import Dates
 from lib.colors.color import Color
 from lib.colors.color_factory import ColorFactory
 from lib.colors.palette import Palette
@@ -46,10 +45,10 @@ class Season:
     @classmethod
     def palette(cls):
         colors = [cls.BLACK]
-        colors.extend([clr for clr in cls.SEASONS["spring"]])
-        colors.extend([clr for clr in cls.SEASONS["summer"]])
-        colors.extend([clr for clr in cls.SEASONS["fall"]])
-        colors.extend([clr for clr in cls.SEASONS["winter"]])
+
+        for color_set in cls.SEASONS.values():
+            colors.extend([clr for clr in color_set])
+
         return Palette(colors)
 
     @classmethod
@@ -60,16 +59,13 @@ class Season:
             colors = cls.SEASONS.get(name)
 
         if colors is None:
-            raise ValueError("Unknown Season: '%d'" % name)
+            raise ValueError(f"Unknown Season: '{name}'")
 
         return colors
 
     @classmethod
     def get_current(cls):
-        now = time.localtime()
-        month = now.tm_mon
-        day = now.tm_mday
-        date_code = (month * 100) + day
+        date_code = Dates.date_code()
 
         color_set = None
         # Pick Color for Season

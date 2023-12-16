@@ -12,9 +12,10 @@ from lib.colors.color import Color
 # **MUST** set the ORDER (iff not normal) before importing other Color classes
 Color.ORDER = ("R", "B", "G")
 
-from info_panel.binary_clock.panel import BinaryClock
+# from info_panel.binary_clock.panel import BinaryClock
 from info_panel.digital_clock.panel import DigitalClock
 from info_panel.debugger.panel import DebugPanel
+from info_panel.message.panel import MessagePanel
 from info_panel.weather.panel import WeatherPanel
 
 MyWiFi.autoconnect()
@@ -38,24 +39,28 @@ for row in range(rows):
             }
         )
 
+# Digital Clock
+digi_clock = DigitalClock(panel_pos[0]["x"], panel_pos[0]["y"])
+
 # Weather
 weather = WeatherPanel(panel_pos[1]["x"], panel_pos[1]["y"])
 
 # Binary Clock
-bin_clock = BinaryClock(panel_pos[2]["x"], panel_pos[2]["y"])
-
-# Digital Clock
-digi_clock = DigitalClock(panel_pos[0]["x"], panel_pos[0]["y"])
+# bin_clock = BinaryClock(panel_pos[2]["x"], panel_pos[2]["y"])
 
 # Debugger
-debug = DebugPanel(panel_pos[4]["x"], panel_pos[4]["y"])
+debug = DebugPanel(panel_pos[2]["x"], panel_pos[2]["y"])
 # debug.bitmap[0,0] = 1
 
+message = MessagePanel(panel_pos[4]["x"], panel_pos[4]["y"])
+
 main_group = displayio.Group()
-main_group.append(weather)
-main_group.append(bin_clock)
-main_group.append(debug)
 main_group.append(digi_clock)
+main_group.append(weather)
+# main_group.append(bin_clock)
+main_group.append(debug)
+main_group.append(message)
+
 display.root_group = main_group
 
 while True:

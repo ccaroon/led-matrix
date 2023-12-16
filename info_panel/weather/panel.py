@@ -1,6 +1,7 @@
 import os
 
 from lib.colors.weather import Weather as WeatherColors
+import info_panel.glyphs.alpha_num as alpha_num
 from info_panel.panel import Panel
 
 from my_wifi import MyWiFi
@@ -33,6 +34,10 @@ class WeatherPanel(Panel):
     OLD_INTERVAL    = 10 * 60 # 10 mins
     # 200 degrees -> "really_hot" => RED
     ERROR_COLOR     = WeatherColors.from_temp(200)
+
+    GLYPH_W = alpha_num.WIDTH
+    CURR_Y = 1
+    HILO_Y = 9
 
     def __init__(self, x, y):
         super().__init__(x, y, WeatherColors.palette())
@@ -79,33 +84,37 @@ class WeatherPanel(Panel):
                 self._bitmap[x,7] = black_idx
 
     def _update_display(self):
-        # Current Temperature
+        # => Current Temperature
         reading = self.__get_data("temperature")
         color = WeatherColors.from_temp(reading.value)
         # print(f"{reading.value} - {reading.age} > {self.OLD_INTERVAL} ({color})")
 
-        # 6 == number width (both digits)
         # center it on x
-        x = (self._bitmap.width // 2) - (6 // 2)
-        self._draw_number2(x, 1, reading.value, color)
+        x = (self._bitmap.width // 2) - ((self.GLYPH_W*2) // 2)
+        self._draw_string(x, self.CURR_Y, f"{reading.value}°", color, spacing=1)
 
         # Border - Color based on current temperature
         # ...or ERROR_COLOR if data is "old"
-        # TODO: don't updated the border **EVERY** time. Only if change.
+        # TODO: don't update the border **EVERY** time. Only if change.
         border_color = self.ERROR_COLOR if reading.age >= self.OLD_INTERVAL else color
         self._border(border_color)
 
-        # Low Temperature
+        # => Low Temperature
         reading = self.__get_data("temperature-low")
         color = WeatherColors.from_temp(reading.value)
-        self._draw_number2(1, 9, reading.value, color)
+        self._draw_string(1, self.HILO_Y, reading.value, color)
 
-        # High Temperature
+        # => High Temperature
         reading = self.__get_data("temperature-high")
         color = WeatherColors.from_temp(reading.value)
-        self._draw_number2(15-6, 9, reading.value, color)
+        self._draw_string(
+            # x == right edge - width of 2 glyphs
+            (self._bitmap.width - 1) - (self.GLYPH_W * 2),
+            self.HILO_Y,
+            reading.value, color
+        )
 
-        # Humidity
+        # => Humidity
         reading = self.__get_data("humidity")
         self.__draw_humidity(reading.value)
 

@@ -1,34 +1,26 @@
 import time
-from info_panel.panel import Panel
 
-from info_panel.glyph import Glyph
+from info_panel.panel import Panel
 from lib.colors.season import Season as SeasonColors
 
 class DigitalClock(Panel):
     UPDATE_INTERVAL = 1
 
+    GLYPH_W = 3
+    HOUR_X  = 0
+    # -1 b/c HOUR first digit is only ever '1' so save a col of pixel on the left
+    SEP_X   = (GLYPH_W * 2)
+    MIN_X   = (GLYPH_W * 3)
+    TIME_Y  = 5
+    AM_PM_X = 4
+    AM_PM_Y = TIME_Y + 5
+
     def __init__(self, x, y):
         super().__init__(x, y, SeasonColors.palette())
-
-        # TODO: Better way to get Glyph W & H
-        number_w = 3 * 2
 
         self.__curr_hour = None
         self.__curr_min  = None
         self.__curr_ampm = None
-
-        start_x = 0
-        self.__pos = {
-            "hour_x": start_x,
-            "hour_y": 5,
-
-            "min_x": start_x + number_w + 3,
-            "min_y": 5,
-
-            "sep_x": start_x + number_w + 1,
-            "sep_y1": 5 + 1,
-            "sep_y2": 5 + 3,
-        }
 
     # TODO: optimize -> only change pixels that need to be changed
     def __border_seconds(self, secs, color_on, color_off):
@@ -60,11 +52,9 @@ class DigitalClock(Panel):
 
     def __draw_am_pm(self, hour, color):
         if hour >= 12:
-            self._draw_alpha_num(5, 10, Glyph.get("P"), color)
+            self._draw_string(self.AM_PM_X, self.AM_PM_Y, "PM", color, spacing=2)
         else:
-            self._draw_alpha_num(5, 10, Glyph.get("A"), color)
-
-        self._draw_alpha_num(9, 10, Glyph.get("M"), color)
+            self._draw_string(self.AM_PM_X, self.AM_PM_Y, "AM", color, spacing=2)
 
     def _update_display(self):
         now = time.localtime()
@@ -74,27 +64,24 @@ class DigitalClock(Panel):
         if now.tm_hour != self.__curr_hour:
             self.__curr_hour = now.tm_hour
             hour = now.tm_hour - 12 if now.tm_hour > 12 else now.tm_hour
-            self._draw_number2(
-                self.__pos["hour_x"], self.__pos["hour_y"],
-                hour, color_set[0],
+            self._draw_string(
+                self.HOUR_X, self.TIME_Y,
+                f" {hour}", color_set[0],
             )
 
         # Colon Separater - Blink on/off with seconds
-        # 0 == Black
-        color_idx = 0
+        color = SeasonColors.BLACK
         if now.tm_sec % 2 == 0:
-            color_idx = self._palette.from_color(color_set[2])
+            color = color_set[2]
 
-        self._bitmap[self.__pos["sep_x"], self.__pos["sep_y1"]] = color_idx
-        self._bitmap[self.__pos["sep_x"], self.__pos["sep_y2"]] = color_idx
+        self._draw_string(self.SEP_X, self.TIME_Y, ":", color)
 
         # Minutes
         if now.tm_min != self.__curr_min:
             self.__curr_min = now.tm_min
-            self._draw_number2(
-                self.__pos["min_x"], self.__pos["min_y"],
-                now.tm_min, color_set[1],
-                leading_zero=True
+            self._draw_string(
+                self.MIN_X, self.TIME_Y,
+                f"{now.tm_min:02d}", color_set[1]
             )
 
         # Seconds (around border)
