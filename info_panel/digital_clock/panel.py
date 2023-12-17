@@ -66,7 +66,7 @@ class DigitalClock(Panel):
             hour = now.tm_hour - 12 if now.tm_hour > 12 else now.tm_hour
             self._draw_string(
                 self.HOUR_X, self.TIME_Y,
-                f" {hour}", color_set[0],
+                f"{hour:2d}", color_set[0],
             )
 
         # Colon Separater - Blink on/off with seconds
