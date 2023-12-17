@@ -34,9 +34,11 @@ class Panel(displayio.Group):
             self._bitmap[0, y] = color_idx
             self._bitmap[self._bitmap.width-1, y] = color_idx
 
-    # d1_color = color
-    # if d1 == 0 and not kwargs.get("leading_zero", False):
-    #     d1_color = ColorFactory.get("black")
+    def _clear(self, color):
+        color_idx = self._palette.from_color(color)
+        for i in range(self._bitmap.width * self._bitmap.height):
+            self._bitmap[i] = color_idx
+
     def _draw_string(self, x, y, msg, color, **kwargs):
         chars = list(str(msg))
         spacing = kwargs.get("spacing", 0)
@@ -50,9 +52,10 @@ class Panel(displayio.Group):
             self._draw_glyph(dx, y, glyph, color)
 
     def _draw_glyph(self, x, y, glyph, color):
+        blk_idx = self._palette.from_name("black")
         color_idx = self._palette.from_color(color)
         for data in glyph:
-            palette_idx = color_idx if data["on"] else 0
+            palette_idx = color_idx if data["on"] else blk_idx
             self._bitmap[data["x"]+x, data["y"]+y] = palette_idx
 
     def _update_display(self):

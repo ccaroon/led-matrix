@@ -15,6 +15,7 @@ Color.ORDER = ("R", "B", "G")
 # from info_panel.binary_clock.panel import BinaryClock
 from info_panel.digital_clock.panel import DigitalClock
 from info_panel.debugger.panel import DebugPanel
+from info_panel.iss.panel import ISSPanel
 from info_panel.message.panel import MessagePanel
 from info_panel.weather.panel import WeatherPanel
 
@@ -52,6 +53,8 @@ weather = WeatherPanel(panel_pos[1]["x"], panel_pos[1]["y"])
 debug = DebugPanel(panel_pos[2]["x"], panel_pos[2]["y"])
 # debug.bitmap[0,0] = 1
 
+iss = ISSPanel(panel_pos[3]["x"], panel_pos[3]["y"])
+
 message = MessagePanel(panel_pos[4]["x"], panel_pos[4]["y"])
 
 main_group = displayio.Group()
@@ -59,6 +62,7 @@ main_group.append(digi_clock)
 main_group.append(weather)
 # main_group.append(bin_clock)
 main_group.append(debug)
+main_group.append(iss)
 main_group.append(message)
 
 display.root_group = main_group
