@@ -1,3 +1,4 @@
+import random
 import time
 
 import displayio
@@ -39,16 +40,29 @@ class Panel(displayio.Group):
         for i in range(self._bitmap.width * self._bitmap.height):
             self._bitmap[i] = color_idx
 
+    def _seed_randomly(self, color, percent=50):
+        width = self._bitmap.width
+        height = self._bitmap.height
+        color_idx = self._palette.from_color(color)
+
+        count = int(width * height * (percent/100))
+        for _ in range(count):
+            x = random.randint(0, width-1)
+            y = random.randint(0, height-1)
+            self._bitmap[x,y] = color_idx
+
     def _draw_string(self, x, y, msg, color, **kwargs):
         chars = list(str(msg))
         spacing = kwargs.get("spacing", 0)
         for idx, char in enumerate(chars):
             glyph = Glyph.get(char)
             # TODO: don't space a space
-            if char is "-":
-                dx = x + (idx * glyph.width)
-            else:
-                dx = x + (idx * glyph.width) + (spacing * idx)
+            # TODO: not working
+            # if char == " ":
+            #     print(f"_draw_string: char = '{char}'")
+            #     dx = x + (idx * glyph.width)
+            # else:
+            dx = x + (idx * glyph.width) + (spacing * idx)
             self._draw_glyph(dx, y, glyph, color)
 
     def _draw_glyph(self, x, y, glyph, color):

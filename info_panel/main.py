@@ -61,7 +61,7 @@ main_group = displayio.Group()
 main_group.append(digi_clock)
 main_group.append(weather)
 # main_group.append(bin_clock)
-main_group.append(debug)
+# main_group.append(debug)
 main_group.append(iss)
 main_group.append(message)
 
