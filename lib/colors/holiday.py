@@ -1,4 +1,4 @@
-from lib.dates import Dates
+from lib.chronos import Chronos
 from lib.colors.color import Color
 from lib.colors.color_factory import ColorFactory
 from lib.colors.palette import Palette
@@ -127,7 +127,7 @@ class Holiday:
 
     @classmethod
     def get_current(cls):
-        date_code = Dates.date_code()
+        date_code = Chronos.date_code()
         color_set = None
 
         name = cls.HOLIDAY_MAP.get(date_code, "just_another_day")

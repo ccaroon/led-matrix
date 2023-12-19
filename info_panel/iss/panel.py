@@ -1,6 +1,7 @@
 import random
 
 from my_wifi import MyWiFi
+from chronos import Chronos
 from lib.colors.basic import Basic as BasicColors
 from info_panel.panel import Panel
 import info_panel.iss.icons as Icons
@@ -11,8 +12,6 @@ class ISSPanel(Panel):
 
     def __init__(self, x, y):
         super().__init__(x, y, BasicColors.palette())
-
-        # self._border(BasicColors.get("white"))
 
         durham = GPSArea.from_file(
             "info_panel/iss/data/durham.coords", reverse=True
@@ -42,8 +41,6 @@ class ISSPanel(Panel):
             }
         )
 
-
-    # TODO: avoid border
     def __draw_icon(self, icon, color_map):
         for idx, pixel in enumerate(icon):
             self._bitmap[idx] = color_map[pixel]
@@ -74,7 +71,7 @@ class ISSPanel(Panel):
                         self._palette.from_color(curr_place['color']),
                     )
                 )
-                print(f"The ISS is over {curr_place['name']} right now.")
+                print(f"{Chronos.datetime_str()} - The ISS is currently over {curr_place['name']}.")
             else:
                 self.__draw_icon(
                     Icons.ICONS.get("Earth"),
@@ -91,8 +88,16 @@ class ISSPanel(Panel):
                 # print("The ISS is NOT overhead right now.")
                 # print(f"https://www.google.com/maps/search/{iss_coords[0]},+{iss_coords[1]}/@{iss_coords[0]},{iss_coords[1]},4z")
         else:
-            self._bitmap[8,8] = self._palette.from_name("red")
-            print(resp)
+            msg = "Err"
+            length = self._strlen(msg, spacing=1)
+            center = self._find_center(length, 5)
+            self._border(BasicColors.get("red"))
+            self._draw_string(
+                center[0], center[1],
+                msg, BasicColors.get("red"),
+                spacing=1
+            )
+            print(resp.content)
 
 
 

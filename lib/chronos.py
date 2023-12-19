@@ -8,6 +8,40 @@ import wifi
 import adafruit_ntp
 
 class Chronos:
+    MONTHS = (
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    )
+
+    HOLIDAYS = {
+        101: "Happy New Year",
+        126: "Happy BDay, Piper",
+        214: "Happy Valentine's Day",
+        219: "Happy BDay, Craig",
+        316: "Happy Anniversary, CNC",
+        317: "Happy St. Patrick's Day",
+        704: "Happy July 4th",
+        823: "Happy BDay, Cate",
+        818: "Happy BDay, Nathan",
+        1025: "Happy BDay, Picasso",
+        1031: "Happy Halloween",
+        # Not *exactly* the correct day, but close enough :)
+        1125: "Happy Thanksgiving",
+        1224: "Christmas Eve",
+        1225: "Merry Christmas",
+        1231: "New Year's Eve"
+    }
+
     @classmethod
     def sync(cls, tz_offset=0):
         if wifi.radio.connected:
@@ -25,10 +59,25 @@ class Chronos:
             time.sleep(1)
 
     @classmethod
-    def format_time(cls, seconds):
+    def datetime_str(cls, seconds=None):
         lt = time.localtime(seconds)
 
         return f"{lt.tm_year:04d}-{lt.tm_mon:02d}-{lt.tm_mday:02d} @ {lt.tm_hour:02d}:{lt.tm_min:02d}:{lt.tm_sec:02d}"
+
+    @classmethod
+    def date_str(cls):
+        now = time.localtime()
+        month_name = cls.MONTHS[now.tm_mon-1]
+        # December 16, 2023
+        return f"{month_name} {now.tm_mday:02d}, {now.tm_year}"
+
+    @classmethod
+    def date_code(cls):
+        now = time.localtime()
+        month = now.tm_mon
+        day = now.tm_mday
+
+        return (month * 100) + day
 
     @classmethod
     def is_dst(cls):
@@ -45,3 +94,8 @@ class Chronos:
         # print(f"DCode: {date_code} | DST? {is_dst} | DST from {dst_period[0]} to {dst_period[1]}")
 
         return is_dst
+
+    @classmethod
+    def motd(cls):
+        date_code = cls.date_code()
+        return cls.HOLIDAYS.get(date_code, cls.date_str())

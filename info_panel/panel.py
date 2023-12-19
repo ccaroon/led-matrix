@@ -40,6 +40,12 @@ class Panel(displayio.Group):
         for i in range(self._bitmap.width * self._bitmap.height):
             self._bitmap[i] = color_idx
 
+    def _find_center(self, width, height):
+        x = (self._bitmap.width // 2) - (width // 2)
+        y = (self._bitmap.height // 2) - (height // 2)
+
+        return (x,y)
+
     def _seed_randomly(self, color, percent=50):
         width = self._bitmap.width
         height = self._bitmap.height
@@ -50,6 +56,13 @@ class Panel(displayio.Group):
             x = random.randint(0, width-1)
             y = random.randint(0, height-1)
             self._bitmap[x,y] = color_idx
+
+    def _strlen(self, msg, spacing=0):
+        """ Return length of the msg/str in pixels """
+        # Assumes mono-spaced "font"
+        glyph = Glyph.get(msg[0])
+        length = (glyph.width * len(msg)) + (len(msg)-1 * spacing)
+        return length
 
     def _draw_string(self, x, y, msg, color, **kwargs):
         chars = list(str(msg))

@@ -5,7 +5,7 @@ import info_panel.glyphs.alpha_num as alpha_num
 
 from info_panel.panel import Panel
 from lib.colors.holiday import Holiday as HolidayColors
-from lib.dates import Dates
+from lib.chronos import Chronos
 
 class MessagePanel(Panel):
     UPDATE_INTERVAL = 15 * 60
@@ -42,7 +42,7 @@ class MessagePanel(Panel):
 
     def _update_display(self):
         color_set = HolidayColors.get("current")
-        msg = Dates.message()
+        msg = Chronos.motd()
         lines = []
 
         clr_idx = random.randint(0,3)

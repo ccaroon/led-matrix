@@ -31,7 +31,7 @@ class AdafruitIO:
             output = {
                 "success": True,
                 "results" : results,
-                "created_at": Chronos.format_time(self.__parse_dt(results[0]["created_at"])),
+                "created_at": Chronos.datetime_str(self.__parse_dt(results[0]["created_at"])),
                 "age": self.__data_age(results[0]["created_at"])
             }
         else:
