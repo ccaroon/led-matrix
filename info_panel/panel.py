@@ -41,6 +41,7 @@ class Panel(displayio.Group):
             self._bitmap[i] = color_idx
 
     def _find_center(self, width, height):
+        """" Given width & height, find (x,y) to center on display """
         x = (self._bitmap.width // 2) - (width // 2)
         y = (self._bitmap.height // 2) - (height // 2)
 
@@ -61,7 +62,8 @@ class Panel(displayio.Group):
         """ Return length of the msg/str in pixels """
         # Assumes mono-spaced "font"
         glyph = Glyph.get(msg[0])
-        length = (glyph.width * len(msg)) + (len(msg)-1 * spacing)
+        length = len(msg) * (glyph.width + spacing)
+        # length = (glyph.width * len(msg)) + (len(msg)-1 * spacing)
         return length
 
     def _draw_string(self, x, y, msg, color, **kwargs):

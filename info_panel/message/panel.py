@@ -26,13 +26,10 @@ class MessagePanel(Panel):
             width=self.WIDTH, height=self.HEIGHT
         )
 
-    def __line_len(self, line):
-        return len(line) * (self.GLYPH_W+self.SPACING)
-
     def __truncate_line(self, line):
         new_line = line
 
-        line_len = self.__line_len(line)
+        line_len = self._strlen(line, self.SPACING)
         if line_len > self.MAX_LINE_LEN:
             diff = (line_len - self.MAX_LINE_LEN) // 4
             print(f"too long by: {diff}")
@@ -52,7 +49,7 @@ class MessagePanel(Panel):
             clr_idx = 0
 
         # Split onto multiple lines iff too long
-        if self.__line_len(msg) > self.MAX_LINE_LEN:
+        if self._strlen(msg, self.SPACING) > self.MAX_LINE_LEN:
             words = msg.split(" ")
 
             num_words = len(words)
@@ -71,8 +68,9 @@ class MessagePanel(Panel):
 
         for idx, line in enumerate(lines):
             msg_line = self.__truncate_line(line)
-            msg_len = self.__line_len(msg_line)
-            x = ((self._bitmap.width // 2) - (msg_len // 2)) + 0
+            msg_len = self._strlen(msg_line, self.SPACING)
+            center = self._find_center(msg_len,0)
+            x = center[0]
             y = 2 + (idx*self.GLYPH_H) + (idx*2)
             # print(f"msg_len: {msg_len}, x: {x}, y: {y}")
             self._draw_string(x, y, msg_line, color_set[clr_idx], spacing=self.SPACING)
