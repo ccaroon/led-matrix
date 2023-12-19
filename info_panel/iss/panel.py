@@ -22,6 +22,7 @@ class ISSPanel(Panel):
         usa = GPSArea.from_file(
             "info_panel/iss/data/usa.coords", reverse=True
         )
+
         # NOTE: names here must match ICONS names
         self.__places = (
             {
@@ -40,6 +41,7 @@ class ISSPanel(Panel):
                 'area': durham
             }
         )
+        self.__last_place = self.__places[0]
 
     def __draw_icon(self, icon, color_map):
         for idx, pixel in enumerate(icon):
@@ -62,31 +64,34 @@ class ISSPanel(Panel):
                     curr_place = place
 
             # Display results
-            if curr_place:
-                self.__draw_icon(
-                    Icons.ICONS.get(curr_place['name']),
-                    (
-                        self._palette.from_name("black"),
-                        self._palette.from_color(curr_place['color']),
-                        self._palette.from_color(curr_place['color']),
+            if curr_place != self.__last_place:
+                print(f"Place: {self.__last_place} -> {curr_place}")
+                self.__last_place = curr_place
+                if curr_place:
+                    self.__draw_icon(
+                        Icons.ICONS.get(curr_place['name']),
+                        (
+                            self._palette.from_name("black"),
+                            self._palette.from_color(curr_place['color']),
+                            self._palette.from_color(curr_place['color']),
+                        )
                     )
-                )
-                print(f"{Chronos.datetime_str()} - The ISS is currently over {curr_place['name']}.")
-            else:
-                self.__draw_icon(
-                    Icons.ICONS.get("Earth"),
-                    (
-                        self._palette.from_name("black"),
-                        self._palette.from_name("blue"),
-                        self._palette.from_name("green"),
-                        self._palette.from_name("white"),
+                    print(f"{Chronos.datetime_str()} - The ISS is currently over {curr_place['name']}.")
+                else:
+                    self.__draw_icon(
+                        Icons.ICONS.get("Earth"),
+                        (
+                            self._palette.from_name("black"),
+                            self._palette.from_name("blue"),
+                            self._palette.from_name("green"),
+                            self._palette.from_name("white"),
+                        )
                     )
-                )
-                iss_pt = random.randint(1, self._bitmap.width * self._bitmap.height)
-                self._bitmap[iss_pt-1] = self._palette.from_name("white")
+                    iss_pt = random.randint(1, self._bitmap.width * self._bitmap.height)
+                    self._bitmap[iss_pt-1] = self._palette.from_name("white")
 
-                # print("The ISS is NOT overhead right now.")
-                # print(f"https://www.google.com/maps/search/{iss_coords[0]},+{iss_coords[1]}/@{iss_coords[0]},{iss_coords[1]},4z")
+                    # print("The ISS is NOT overhead right now.")
+                    # print(f"https://www.google.com/maps/search/{iss_coords[0]},+{iss_coords[1]}/@{iss_coords[0]},{iss_coords[1]},4z")
         else:
             msg = "Err"
             length = self._strlen(msg, spacing=1)

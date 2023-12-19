@@ -46,6 +46,7 @@ LIB_DEST_FILES = $(LIB_SRC_FILES:%=/media/$(USER)/CIRCUITPY/%)
 libs: $(LIB_DEST_FILES)
 
 # InfoPanel
+## TODO: what about data files?
 IP_SRC_FILES = $(shell find info_panel -name "*.py")
 IP_DEST_FILES = $(IP_SRC_FILES:%=/media/$(USER)/CIRCUITPY/%)
 ## InfoPanel -- Main
