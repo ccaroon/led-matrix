@@ -23,6 +23,7 @@ class ISSPanel(Panel):
         usa = GPSArea.from_file(
             "info_panel/iss/data/usa.coords", reverse=True
         )
+        # NOTE: names here must match ICONS names
         self.__places = (
             {
                 'name': "The USA",
