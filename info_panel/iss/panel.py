@@ -63,13 +63,14 @@ class ISSPanel(Panel):
                 if place['area'].contains(iss_coords):
                     curr_place = place
 
-            # Report results
+            # Display results
             if curr_place:
                 self.__draw_icon(
                     Icons.ICONS.get(curr_place['name']),
                     (
                         self._palette.from_name("black"),
-                        self._palette.from_color(curr_place['color'])
+                        self._palette.from_color(curr_place['color']),
+                        self._palette.from_color(curr_place['color']),
                     )
                 )
                 print(f"The ISS is over {curr_place['name']} right now.")

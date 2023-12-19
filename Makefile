@@ -8,8 +8,7 @@ usage:
 	@echo "* upload-as-main FILE=<file>"
 	@echo "* upload-file FILE=<file>"
 	@echo "* install-gol"
-	@echo "* install-info-panel"
-	# @echo "* secrets"
+	@echo "* info-panel"
 
 shell:
 	picocom $(PORT) -b115200
@@ -41,23 +40,24 @@ install-gol: /media/$(USER)/CIRCUITPY/settings.toml
 	cp lib/led_matrix.py /media/$(USER)/CIRCUITPY/lib
 	cp -a game_of_life /media/$(USER)/CIRCUITPY/
 
-install-info-panel: /media/$(USER)/CIRCUITPY/settings.toml
-	# --- Main
-	cp info_panel/main.py /media/$(USER)/CIRCUITPY/main.py
-	# --- Libs
-	cp lib/aio.py /media/$(USER)/CIRCUITPY/lib
-	cp lib/dates.py /media/$(USER)/CIRCUITPY/lib
-	cp lib/chronos.py /media/$(USER)/CIRCUITPY/lib
-	cp lib/led_matrix.py /media/$(USER)/CIRCUITPY/lib
-	cp lib/my_wifi.py /media/$(USER)/CIRCUITPY/lib
-	cp -a lib/colors /media/$(USER)/CIRCUITPY/lib
-	# --- Package
-	cp -a info_panel /media/$(USER)/CIRCUITPY/
+# Lib
+LIB_SRC_FILES = $(shell find lib -name "*.py")
+LIB_DEST_FILES = $(LIB_SRC_FILES:%=/media/$(USER)/CIRCUITPY/%)
+libs: $(LIB_DEST_FILES)
 
-secrets: lib/secrets.py
+# InfoPanel
+IP_SRC_FILES = $(shell find info_panel -name "*.py")
+IP_DEST_FILES = $(IP_SRC_FILES:%=/media/$(USER)/CIRCUITPY/%)
+## InfoPanel -- Main
+/media/$(USER)/CIRCUITPY/info_panel/main.py: info_panel/main.py
+	cp $< $@
+	cp $< /media/$(USER)/CIRCUITPY/main.py
+## InfoPanel -- Package
+info-panel: libs $(IP_DEST_FILES) /media/$(USER)/CIRCUITPY/settings.toml
 
-lib/secrets.py: .secrets
-	./bin/gen_secrets.py
-	cp lib/secrets.py /media/$(USER)/CIRCUITPY/
 
-.PHONY: shell upload-as-main upload-file install-gol install-info-panel secrets
+/media/$(USER)/CIRCUITPY/%.py: %.py
+	cp $< $@
+
+
+.PHONY: shell upload-as-main upload-file install-gol info-panel
