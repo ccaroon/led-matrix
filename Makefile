@@ -46,8 +46,8 @@ LIB_DEST_FILES = $(LIB_SRC_FILES:%=/media/$(USER)/CIRCUITPY/%)
 libs: $(LIB_DEST_FILES)
 
 # InfoPanel
-## TODO: what about data files?
-IP_SRC_FILES = $(shell find info_panel -name "*.py")
+# IP_SRC_FILES = $(shell find info_panel -name "*.py")
+IP_SRC_FILES = $(shell find info_panel -type f)
 IP_DEST_FILES = $(IP_SRC_FILES:%=/media/$(USER)/CIRCUITPY/%)
 ## InfoPanel -- Main
 /media/$(USER)/CIRCUITPY/info_panel/main.py: info_panel/main.py
@@ -57,8 +57,19 @@ IP_DEST_FILES = $(IP_SRC_FILES:%=/media/$(USER)/CIRCUITPY/%)
 info-panel: libs $(IP_DEST_FILES) /media/$(USER)/CIRCUITPY/settings.toml
 
 
-/media/$(USER)/CIRCUITPY/%.py: %.py
+# /media/$(USER)/CIRCUITPY/%.py: %.py
+# 	cp $< $@
+
+/media/$(USER)/CIRCUITPY/%: %
 	cp $< $@
+
+
+
+
+
+
+
+
 
 
 .PHONY: shell upload-as-main upload-file install-gol info-panel
