@@ -10,7 +10,7 @@ from lib.chronos import Chronos
 class MessagePanel(Panel):
     UPDATE_INTERVAL = 15 * 60
 
-    WIDTH = 64
+    WIDTH = 48
     HEIGHT = 16
     GLYPH_W = alpha_num.WIDTH
     GLYPH_H = alpha_num.HEIGHT
@@ -31,9 +31,10 @@ class MessagePanel(Panel):
 
         line_len = self._strlen(line, self.SPACING)
         if line_len > self.MAX_LINE_LEN:
-            diff = (line_len - self.MAX_LINE_LEN) // 4
-            print(f"too long by: {diff}")
-            new_line = line[0:-(diff+4)] + "..."
+            diff = (line_len - self.MAX_LINE_LEN) // (self.GLYPH_W + self.SPACING)
+            # print(f"too long by: {diff}")
+            diff = 2 if diff == 0 else diff
+            new_line = line[0:-diff] + "•"
 
         return(new_line)
 
@@ -53,14 +54,18 @@ class MessagePanel(Panel):
             words = msg.split(" ")
 
             num_words = len(words)
-            words_per_line = math.ceil(num_words / self.NUM_LINES)
-            start_idx = 0
-            end_idx = words_per_line
-            for _ in range(self.NUM_LINES):
-                line = " ".join(words[start_idx:end_idx])
-                lines.append(line)
-                start_idx = end_idx
-                end_idx += words_per_line
+            if num_words > 1:
+                words_per_line = math.ceil(num_words / self.NUM_LINES)
+                start_idx = 0
+                end_idx = words_per_line
+                for _ in range(self.NUM_LINES):
+                    line = " ".join(words[start_idx:end_idx])
+                    # print(f"Adding {line}")
+                    lines.append(line)
+                    start_idx = end_idx
+                    end_idx += words_per_line
+            else:
+                lines.append(msg)
         else:
             lines.append(msg)
 

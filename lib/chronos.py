@@ -9,34 +9,36 @@ import adafruit_ntp
 
 class Chronos:
     MONTHS = (
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December"
+        {"short": "Jan", "long": "January"},
+        {"short": "Feb", "long": "February"},
+        {"short": "Mar", "long": "March"},
+        {"short": "Apr", "long": "April"},
+        {"short": "May", "long": "May"},
+        {"short": "Jun", "long": "June"},
+        {"short": "Jul", "long": "July"},
+        {"short": "Aug", "long": "August"},
+        {"short": "Sep", "long": "September"},
+        {"short": "Oct", "long": "October"},
+        {"short": "Nov", "long": "November"},
+        {"short": "Dec", "long": "December"}
     )
 
+    # HINT: 11 chars per line for 48 pixel LED
     HOLIDAYS = {
+        100: "1234567890+ 1234567890+",
         101: "Happy New Year",
         126: "Happy BDay, Piper",
-        214: "Happy Valentine's Day",
+        214: "Valentine's Day",
         219: "Happy BDay, Craig",
-        316: "Happy Anniversary, CNC",
-        317: "Happy St. Patrick's Day",
+        316: "Cate+Craig Anniversary",
+        317: "St. Patty's Day",
         704: "Happy July 4th",
-        823: "Happy BDay, Cate",
         818: "Happy BDay, Nathan",
+        823: "Happy BDay, Cate",
         1025: "Happy BDay, Picasso",
         1031: "Happy Halloween",
         # Not *exactly* the correct day, but close enough :)
-        1125: "Happy Thanksgiving",
+        1125: "Happy Thksgiving",
         1224: "Christmas Eve",
         1225: "Merry Christmas",
         1231: "New Year's Eve"
@@ -65,9 +67,10 @@ class Chronos:
         return f"{lt.tm_year:04d}-{lt.tm_mon:02d}-{lt.tm_mday:02d} @ {lt.tm_hour:02d}:{lt.tm_min:02d}:{lt.tm_sec:02d}"
 
     @classmethod
-    def date_str(cls):
+    def date_str(cls, **kwargs):
+        mon_len = kwargs.get("mon_len", "short")
         now = time.localtime()
-        month_name = cls.MONTHS[now.tm_mon-1]
+        month_name = cls.MONTHS[now.tm_mon-1][mon_len]
         # December 16, 2023
         return f"{month_name} {now.tm_mday:02d}, {now.tm_year}"
 
