@@ -6,51 +6,51 @@ from lib.colors.season import Season as SeasonColors
 class BinaryClock(Panel):
     UPDATE_INTERVAL = 1
 
-    # As X,Y tuples
+    # Pixel Locations - as X,Y tuples
+    # Each X,Y represents the top-left corner of a 2x2 pixel
+    # ...with 1 pixel width between each 2x2 block
     HOUR_PIXELS = [
         (
-            (4,6),
-            (4,7),
-            (4,8),
-            (4,9)
+            (1,2),
+            (1,5),
+            (1,8),
+            (1,11)
         ),
         (
-            (5,6),
-            (5,7),
-            (5,8),
-            (5,9)
+            (3,2),
+            (3,5),
+            (3,8),
+            (3,11)
         )
     ]
 
-    # As X,Y tuples
     MINUTE_PIXELS = [
         (
-            (7,6),
-            (7,7),
-            (7,8),
-            (7,9)
+            (6,2),
+            (6,5),
+            (6,8),
+            (6,11)
         ),
         (
-            (8,6),
-            (8,7),
+            (8,2),
+            (8,5),
             (8,8),
-            (8,9)
+            (8,11)
         )
     ]
 
-    # As X,Y tuples
     SECOND_PIXELS = [
         (
-            (10,6),
-            (10,7),
-            (10,8),
-            (10,9)
+            (11,2),
+            (11,5),
+            (11,8),
+            (11,11)
         ),
         (
-            (11,6),
-            (11,7),
-            (11,8),
-            (11,9)
+            (13,2),
+            (13,5),
+            (13,8),
+            (13,11)
         )
     ]
 
@@ -81,9 +81,15 @@ class BinaryClock(Panel):
                 else:
                     color = on_color
 
+                # Each "pixel" is a 2x2 set of pixels
                 x = pixel_set[digit][idx][0]
                 y = pixel_set[digit][idx][1]
-                self._bitmap[x,y] = self._palette.from_color(color)
+                color_idx = self._palette.from_color(color)
+
+                self._bitmap[x,   y]   = color_idx
+                self._bitmap[x+1, y]   = color_idx
+                self._bitmap[x,   y+1] = color_idx
+                self._bitmap[x+1, y+1] = color_idx
 
     def _update_display(self):
         now = time.localtime()
