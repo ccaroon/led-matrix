@@ -57,9 +57,7 @@ class BinaryClock(Panel):
     def __init__(self, x, y):
         super().__init__(x, y, SeasonColors.palette())
 
-        self.__color_set = SeasonColors.get("current")
-        self._border(self.__color_set[3])
-
+        self.__curr_day  = None
         self.__curr_hour = None
         self.__curr_min  = None
 
@@ -93,17 +91,24 @@ class BinaryClock(Panel):
 
     def _update_display(self):
         now = time.localtime()
+        color_set = SeasonColors.get_current()
+
+        # Draw the border once a day in case the season changes
+        # and it's color needs to be updated.
+        if now.tm_mday != self.__curr_day:
+            self.__curr_day = now.tm_mday
+            self._border(color_set[3])
 
         if now.tm_hour != self.__curr_hour:
             self.__curr_hour = now.tm_hour
-            self.__set_number(now.tm_hour, self.HOUR_PIXELS,   self.__color_set[0])
+            self.__set_number(now.tm_hour, self.HOUR_PIXELS, color_set[0])
 
         if now.tm_min != self.__curr_min:
             self.__curr_min = now.tm_min
-            self.__set_number(now.tm_min,  self.MINUTE_PIXELS, self.__color_set[1])
+            self.__set_number(now.tm_min,  self.MINUTE_PIXELS, color_set[1])
 
         # Always update the seconds since UPDATE_INTERVAL is 1 sec anyway
-        self.__set_number(now.tm_sec,  self.SECOND_PIXELS, self.__color_set[2])
+        self.__set_number(now.tm_sec,  self.SECOND_PIXELS, color_set[2])
 
 
 
