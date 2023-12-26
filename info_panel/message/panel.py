@@ -26,6 +26,8 @@ class MessagePanel(Panel):
             width=self.WIDTH, height=self.HEIGHT
         )
 
+        self.__curr_msg = None
+
     def __truncate_line(self, line):
         new_line = line
 
@@ -42,6 +44,10 @@ class MessagePanel(Panel):
         color_set = HolidayColors.get("current")
         msg = Chronos.motd()
         lines = []
+
+        if msg != self.__curr_msg:
+            self._clear(HolidayColors.BLACK)
+            self.__curr_msg = msg
 
         clr_idx = random.randint(0,3)
         self._border(color_set[clr_idx])
