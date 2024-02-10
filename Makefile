@@ -61,6 +61,7 @@ info-panel: libs $(IP_DEST_FILES) /media/$(USER)/CIRCUITPY/settings.toml
 # 	cp $< $@
 
 /media/$(USER)/CIRCUITPY/%: %
+	mkdir -p `dirname $@`
 	cp $< $@
 
 

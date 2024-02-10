@@ -1,4 +1,5 @@
 # import random
+from lib.colors.palette import Palette
 from lib.colors.color import Color
 
 class ColorFactory:
@@ -29,6 +30,13 @@ class ColorFactory:
             raise ValueError("Unknown Color: '%s'" % name)
 
         return color
+
+    @classmethod
+    def basic_palette(cls):
+        colors = list(cls.COLORS.values())
+        palette = Palette(colors)
+
+        return palette
 
     # @classmethod
     # def random(cls, count=1):

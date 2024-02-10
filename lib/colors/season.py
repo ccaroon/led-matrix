@@ -14,7 +14,7 @@ class Season:
     START_OF_FALL   =  922
     START_OF_WINTER =  1221
 
-    SEASONS = {
+    COLOR_SETS = {
         "spring": (
             Color(0x00FF19, name="spring1"), # green
             Color(0xFF0096, name="spring2"), # pink
@@ -44,19 +44,23 @@ class Season:
 
     @classmethod
     def palette(cls):
+        return Palette(cls.colors())
+
+    @classmethod
+    def colors(cls):
         colors = [cls.BLACK]
 
-        for color_set in cls.SEASONS.values():
+        for color_set in cls.COLOR_SETS.values():
             colors.extend([clr for clr in color_set])
 
-        return Palette(colors)
+        return colors
 
     @classmethod
     def get(cls, name):
         if name == "current":
             colors = cls.get_current()
         else:
-            colors = cls.SEASONS.get(name)
+            colors = cls.COLOR_SETS.get(name)
 
         if colors is None:
             raise ValueError(f"Unknown Season: '{name}'")

@@ -11,9 +11,13 @@ class Basic:
 
     @classmethod
     def palette(cls):
+        return Palette(cls.colors())
+
+    @classmethod
+    def colors(cls):
         colors = [clr for clr in cls.COLORS.values()]
         colors.insert(0, ColorFactory.get("black"))
-        return Palette(colors)
+        return colors
 
     @classmethod
     def get(cls, name):

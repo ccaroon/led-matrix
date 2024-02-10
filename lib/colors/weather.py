@@ -25,10 +25,15 @@ class Weather:
 
     @classmethod
     def palette(cls):
+        return Palette(cls.colors())
+
+    @classmethod
+    def colors(cls):
         colors = [cls.BLACK]
         colors.extend([item["color"] for item in cls.TEMP_RANGES])
         colors.extend([item["color"] for item in cls.HUMD_RANGES])
-        return Palette(colors)
+
+        return colors
 
     @classmethod
     def from_temp(cls, temp):

@@ -5,6 +5,7 @@ import info_panel.glyphs.alpha_num as alpha_num
 
 from info_panel.panel import Panel
 from lib.colors.holiday import Holiday as HolidayColors
+from lib.colors.season import Season as SeasonColors
 from lib.chronos import Chronos
 
 class MessagePanel(Panel):
@@ -20,9 +21,11 @@ class MessagePanel(Panel):
     MAX_LINE_LEN = WIDTH - 2
 
     def __init__(self, x, y):
+        palette = HolidayColors.palette()
+        palette.add_colors(SeasonColors.colors())
         super().__init__(
             x, y,
-            HolidayColors.palette(),
+            palette,
             width=self.WIDTH, height=self.HEIGHT
         )
 
@@ -42,6 +45,9 @@ class MessagePanel(Panel):
 
     def _update_display(self):
         color_set = HolidayColors.get("current")
+        if not color_set:
+            color_set = SeasonColors.get("current")
+
         msg = Chronos.motd()
         lines = []
 

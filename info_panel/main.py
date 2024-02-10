@@ -17,6 +17,7 @@ from info_panel.digital_clock.panel import DigitalClock
 # from info_panel.debugger.panel import DebugPanel
 from info_panel.iss.panel import ISSPanel
 from info_panel.message.panel import MessagePanel
+from info_panel.moon.panel import MoonPanel
 from info_panel.weather.panel import WeatherPanel
 
 MyWiFi.autoconnect()
@@ -54,8 +55,10 @@ bin_clock = BinaryClock(panel_pos[2]["x"], panel_pos[2]["y"])
 
 iss = ISSPanel(panel_pos[3]["x"], panel_pos[3]["y"])
 
-# Message Panel -- Entire Bottom Row
+# Message Panel -- Takes up panels 4,5,6
 message = MessagePanel(panel_pos[4]["x"], panel_pos[4]["y"])
+
+# moon = MoonPanel(panel_pos[7]["x"], panel_pos[5]["y"])
 
 main_group = displayio.Group()
 # Listed in Update Priority
@@ -64,6 +67,7 @@ main_group.append(bin_clock)
 main_group.append(iss)
 main_group.append(weather)
 main_group.append(message)
+# main_group.append(moon)
 # main_group.append(debug)
 
 display.root_group = main_group

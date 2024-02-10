@@ -7,20 +7,13 @@ import displayio
 # Instead wrapping displayio.Palette
 class Palette():
     def __init__(self, colors:list):
-        self.__num_colors = len(colors)
-        self.__dio_palette = displayio.Palette(self.__num_colors)
-
+        self.__num_colors = 0
+        self.__all_colors = []
+        self.__dio_palette = None
         self.__name_map = {}
         self.__value_map = {}
-        for idx, color in enumerate(colors):
-            # Populate displayio.Pallete instance
-            self.__dio_palette[idx] = color.value
 
-            # "green" = 1
-            self.__name_map[color.name] = idx
-
-            # 0x00ff00 = 1
-            self.__value_map[str(color)] = idx
+        self.add_colors(colors)
 
     @property
     def num_colors(self):
@@ -29,6 +22,24 @@ class Palette():
     @property
     def dio_palette(self):
         return self.__dio_palette
+
+    def add_colors(self, colors):
+        self.__all_colors.extend(colors)
+        self.__num_colors = len(self.__all_colors)
+
+        self.__dio_palette = displayio.Palette(self.__num_colors)
+
+        self.__name_map = {}
+        self.__value_map = {}
+        for idx, color in enumerate(self.__all_colors):
+            # Populate displayio.Pallete instance
+            self.__dio_palette[idx] = color.value
+
+            # "green" = 1
+            self.__name_map[color.name] = idx
+
+            # 0x00ff00 = 1
+            self.__value_map[str(color)] = idx
 
     def from_name(self, name):
         return self.__name_map[name]

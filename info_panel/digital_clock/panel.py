@@ -11,9 +11,9 @@ class DigitalClock(Panel):
     # -1 b/c HOUR first digit is only ever '1' so save a col of pixel on the left
     SEP_X   = (GLYPH_W * 2)
     MIN_X   = (GLYPH_W * 3)
-    TIME_Y  = 5
+    TIME_Y  = 3
     AM_PM_X = 4
-    AM_PM_Y = TIME_Y + 5
+    AM_PM_Y = TIME_Y + 6
 
     def __init__(self, x, y):
         super().__init__(x, y, SeasonColors.palette())
