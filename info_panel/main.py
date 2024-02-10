@@ -36,7 +36,7 @@ for row in range(rows):
     for col in range(cols):
         panel_pos.append(
             {
-                "x": (display.width // cols)  * col,
+                "x": (display.width // cols) * col,
                 "y": (display.height // rows) * row
             }
         )
@@ -56,7 +56,8 @@ bin_clock = BinaryClock(panel_pos[2]["x"], panel_pos[2]["y"])
 iss = ISSPanel(panel_pos[3]["x"], panel_pos[3]["y"])
 
 # Message Panel -- Takes up panels 4,5,6
-message = MessagePanel(panel_pos[4]["x"], panel_pos[4]["y"])
+mp_x = panel_pos[4]["x"] + int((display.width / 4) / 2)
+message = MessagePanel(mp_x, panel_pos[4]["y"])
 
 # moon = MoonPanel(panel_pos[7]["x"], panel_pos[5]["y"])
 
