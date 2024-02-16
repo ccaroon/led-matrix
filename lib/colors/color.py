@@ -21,6 +21,9 @@ class Color:
     def __str__(self) -> str:
         return str(hex(self.__value))
 
+    def __hash__(self) -> int:
+        return self.__value
+
     def __int2rgb(self, value):
         # 0xLLMMRR
         v_left = value >> 16

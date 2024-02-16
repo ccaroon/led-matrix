@@ -9,7 +9,7 @@ from lib.colors.season import Season as SeasonColors
 from lib.chronos import Chronos
 
 class MessagePanel(Panel):
-    UPDATE_INTERVAL = 15 * 60
+    UPDATE_INTERVAL = 5 * 60
 
     WIDTH = 48
     HEIGHT = 16

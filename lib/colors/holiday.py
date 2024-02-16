@@ -42,8 +42,8 @@ class Holiday:
         "valentines": (
             ColorFactory.get("red"),
             ColorFactory.get("white"),
-            Color(0xFF4545, name="vd_pink"),
-            ColorFactory.get("black")
+            Color(0xFF69B4, name="vd_pink1"),
+            Color(0xFF1493, name="vd_pink2"),
         ),
         "birthday": (
             ColorFactory.get("green"),
@@ -61,7 +61,7 @@ class Holiday:
             ColorFactory.get("red"),
             ColorFactory.get("white"),
             ColorFactory.get("blue"),
-            ColorFactory.get("black")
+            Color(0x4682B4, name="steel_blue")
         ),
         "halloween": (
             ColorFactory.get("orange"),
@@ -84,7 +84,7 @@ class Holiday:
     }
 
     HOLIDAY_MAP = {
-        TEST_DAY: "birthday",
+        TEST_DAY: "independence",
         CRAIG_BDAY: "birthday",
         CATE_BDAY: "birthday",
         NATE_BDAY: "birthday",

@@ -14,7 +14,7 @@ Color.ORDER = ("R", "B", "G")
 
 from info_panel.binary_clock.panel import BinaryClock
 from info_panel.digital_clock.panel import DigitalClock
-# from info_panel.debugger.panel import DebugPanel
+from info_panel.debugger.panel import DebugPanel
 from info_panel.iss.panel import ISSPanel
 from info_panel.message.panel import MessagePanel
 from info_panel.moon.panel import MoonPanel
@@ -29,47 +29,75 @@ Chronos.sync(tz_offset=os.getenv("time.tz_offset"))
 
 display = led_matrix.init_64x32()
 
-rows = 2
-cols = 4
-panel_pos = []
-for row in range(rows):
-    for col in range(cols):
-        panel_pos.append(
-            {
-                "x": (display.width // cols) * col,
-                "y": (display.height // rows) * row
-            }
-        )
+PANEL_ROWS = 2
+PANEL_COLS = 4
+PANEL_WIDTH = display.width // PANEL_COLS
+PANEL_HEIGHT = display.height // PANEL_ROWS
+
+
+def panel_pos(idx):
+    row = idx // PANEL_COLS
+    col = idx % PANEL_COLS
+
+    if row >= PANEL_ROWS or col >= PANEL_COLS:
+        raise ValueError(f"Invalid Panel Position: [{idx}]")
+
+    x = (display.width // PANEL_COLS) * col
+    y = (display.height // PANEL_ROWS) * row
+
+    return x, y
+
+
+PANEL_LAYOUT = {
+    "MessagePanel": 0,  # 0,1,2 ALL taken up
+    "DigitalClock": 4,
+    "Weather": 5,
+    "BinaryClock": 3,
+    "Debugger": 6,
+    # "MoonPhase": 6,
+    "ISSTracker": 7
+}
 
 # Digital Clock
-digi_clock = DigitalClock(panel_pos[0]["x"], panel_pos[0]["y"])
+pos = panel_pos(PANEL_LAYOUT["DigitalClock"])
+digi_clock = DigitalClock(pos[0], pos[1])
 
 # Weather
-weather = WeatherPanel(panel_pos[1]["x"], panel_pos[1]["y"])
+pos = panel_pos(PANEL_LAYOUT["Weather"])
+weather = WeatherPanel(pos[0], pos[1])
 
 # Binary Clock
-bin_clock = BinaryClock(panel_pos[2]["x"], panel_pos[2]["y"])
+pos = panel_pos(PANEL_LAYOUT["BinaryClock"])
+bin_clock = BinaryClock(pos[0], pos[1])
 
 # Debugger
-# debug = DebugPanel(panel_pos[2]["x"], panel_pos[2]["y"])
+pos = panel_pos(PANEL_LAYOUT["Debugger"])
+debug = DebugPanel(pos[0], pos[1])
 
-iss = ISSPanel(panel_pos[3]["x"], panel_pos[3]["y"])
+# ISS Tracker
+pos = panel_pos(PANEL_LAYOUT["ISSTracker"])
+iss = ISSPanel(pos[0], pos[1])
 
 # Message Panel -- Takes up panels 4,5,6
-mp_x = panel_pos[4]["x"] + int((display.width / 4) / 2)
-message = MessagePanel(mp_x, panel_pos[4]["y"])
+pos = panel_pos(PANEL_LAYOUT["MessagePanel"])
+# Shift X 1/2 a PANEL_WIDTH
+# mp_x = pos[0] + (PANEL_WIDTH // 2)
+message = MessagePanel(pos[0], pos[1])
 
-# moon = MoonPanel(panel_pos[7]["x"], panel_pos[5]["y"])
+# Moon Phase
+# pos = panel_pos(PANEL_LAYOUT["MoonPhase"])
+# moon = MoonPanel(pos[0], pos[1)
 
+# Add Panels to main Display Group
+# Listed in Update Priority Order
 main_group = displayio.Group()
-# Listed in Update Priority
 main_group.append(digi_clock)
 main_group.append(bin_clock)
 main_group.append(iss)
 main_group.append(weather)
 main_group.append(message)
 # main_group.append(moon)
-# main_group.append(debug)
+main_group.append(debug)
 
 display.root_group = main_group
 
