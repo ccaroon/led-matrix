@@ -15,6 +15,7 @@ Color.ORDER = ("R", "B", "G")
 from info_panel.binary_clock.panel import BinaryClock
 from info_panel.digital_clock.panel import DigitalClock
 from info_panel.debugger.panel import DebugPanel
+from info_panel.fibonacci_clock.panel import FibonacciClock
 from info_panel.iss.panel import ISSPanel
 from info_panel.message.panel import MessagePanel
 from info_panel.moon.panel import MoonPanel
@@ -53,7 +54,8 @@ PANEL_LAYOUT = {
     "DigitalClock": 4,
     "Weather": 5,
     "BinaryClock": 3,
-    "Debugger": 6,
+    # "Debugger": 6,
+    "FibonacciClock": 6,
     # "MoonPhase": 6,
     "ISSTracker": 7
 }
@@ -71,8 +73,12 @@ pos = panel_pos(PANEL_LAYOUT["BinaryClock"])
 bin_clock = BinaryClock(pos[0], pos[1])
 
 # Debugger
-pos = panel_pos(PANEL_LAYOUT["Debugger"])
-debug = DebugPanel(pos[0], pos[1])
+# pos = panel_pos(PANEL_LAYOUT["Debugger"])
+# debug = DebugPanel(pos[0], pos[1])
+
+# Fibonacci Clock
+pos = panel_pos(PANEL_LAYOUT["FibonacciClock"])
+fib_clock = FibonacciClock(pos[0], pos[1])
 
 # ISS Tracker
 pos = panel_pos(PANEL_LAYOUT["ISSTracker"])
@@ -95,9 +101,10 @@ main_group.append(digi_clock)
 main_group.append(bin_clock)
 main_group.append(iss)
 main_group.append(weather)
+main_group.append(fib_clock)
 main_group.append(message)
 # main_group.append(moon)
-main_group.append(debug)
+# main_group.append(debug)
 
 display.root_group = main_group
 
