@@ -149,10 +149,10 @@ class FibonacciClock(Panel):
         offset = box["offset"]
         color_idx = self._palette.from_color(color)
 
-        for x in range(size):
-            for y in range(size):
-                loc_x = self.LOCATION[0] + offset[0] + x
-                loc_y = self.LOCATION[1] + offset[1] + y
+        for col in range(size):
+            for row in range(size):
+                loc_x = self.LOCATION[0] + offset[0] + col
+                loc_y = self.LOCATION[1] + offset[1] + row
                 self._bitmap[loc_x, loc_y] = color_idx
 
     def _update_display(self):
@@ -164,7 +164,7 @@ class FibonacciClock(Panel):
         hour = now.tm_hour - 12 if now.tm_hour > 12 else now.tm_hour
         minutes = now.tm_min // 5
 
-        print(f"{hour:02}:{now.tm_min:02}")
+        # print(f"{hour:02}:{now.tm_min:02}")
 
         # Which boxes to turn on
         hour_boxes = self.__number_to_boxes(hour)
