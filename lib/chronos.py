@@ -50,6 +50,13 @@ class Chronos:
             pool = socketpool.SocketPool(wifi.radio)
             ntp = adafruit_ntp.NTP(pool, tz_offset=tz_offset)
             rtc.RTC().datetime = ntp.datetime
+
+            # Adjust for DST if necessary (after dt has been set)
+            if cls.is_dst():
+                dt_fields = list(ntp.datetime)
+                # Add 1 to hour
+                dt_fields[3] += 1
+                rtc.RTC().datetime = time.struct_time(dt_fields)
         else:
             raise RuntimeError("Cannot Sync Time. WiFi not connected!")
 

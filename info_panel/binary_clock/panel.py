@@ -1,6 +1,7 @@
 import time
 
 from info_panel.panel import Panel
+from lib.colors.holiday import Holiday as HolidayColors
 from lib.colors.season import Season as SeasonColors
 
 class BinaryClock(Panel):
@@ -55,7 +56,9 @@ class BinaryClock(Panel):
     ]
 
     def __init__(self, x, y):
-        super().__init__(x, y, SeasonColors.palette())
+        palette = HolidayColors.palette()
+        palette.add_colors(SeasonColors.colors())
+        super().__init__(x, y, palette)
 
         self.__curr_day  = None
         self.__curr_hour = None
@@ -91,7 +94,10 @@ class BinaryClock(Panel):
 
     def _update_display(self):
         now = time.localtime()
-        color_set = SeasonColors.get_current()
+
+        color_set = HolidayColors.get("current")
+        if not color_set:
+            color_set = SeasonColors.get("current")
 
         # Draw the border once a day in case the season changes
         # and it's color needs to be updated.

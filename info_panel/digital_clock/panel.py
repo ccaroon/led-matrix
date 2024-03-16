@@ -1,6 +1,7 @@
 import time
 
 from info_panel.panel import Panel
+from lib.colors.holiday import Holiday as HolidayColors
 from lib.colors.season import Season as SeasonColors
 
 class DigitalClock(Panel):
@@ -16,7 +17,9 @@ class DigitalClock(Panel):
     AM_PM_Y = TIME_Y + 6
 
     def __init__(self, x, y):
-        super().__init__(x, y, SeasonColors.palette())
+        palette = HolidayColors.palette()
+        palette.add_colors(SeasonColors.colors())
+        super().__init__(x, y, palette)
 
         self.__curr_hour = None
         self.__curr_min  = None
@@ -58,7 +61,10 @@ class DigitalClock(Panel):
 
     def _update_display(self):
         now = time.localtime()
-        color_set = SeasonColors.get_current()
+
+        color_set = HolidayColors.get("current")
+        if not color_set:
+            color_set = SeasonColors.get("current")
 
         # Hour
         if now.tm_hour != self.__curr_hour:
@@ -69,7 +75,7 @@ class DigitalClock(Panel):
                 f"{hour:2d}", color_set[0],
             )
 
-        # Colon Separater - Blink on/off with seconds
+        # Colon Separator - Blink on/off with seconds
         color = SeasonColors.BLACK
         if now.tm_sec % 2 == 0:
             color = color_set[2]
