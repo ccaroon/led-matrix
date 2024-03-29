@@ -1,17 +1,17 @@
-MAC_PORT = "/dev/tty.SLAB_USBtoUART"
-LNX_PORT = "/dev/ttyACM0"
-PORT = $(LNX_PORT)
+#MAC_PORT = "/dev/tty.SLAB_USBtoUART"
+#LNX_PORT = "/dev/ttyACM0"
+#PORT = $(LNX_PORT)
 
 
 usage:
-	@echo "* shell"
+#	@echo "* shell"
 	@echo "* upload-as-main FILE=<file>"
 	@echo "* upload-file FILE=<file>"
 	@echo "* install-gol"
 	@echo "* info-panel"
 
-shell:
-	picocom $(PORT) -b115200
+#shell:
+#	picocom $(PORT) -b115200
 
 upload-as-main:
 ifneq ($(FILE),)
@@ -30,10 +30,10 @@ endif
 /media/$(USER)/CIRCUITPY/settings.toml: settings.toml
 	cp settings.toml /media/$(USER)/CIRCUITPY/
 
-install-playground:
-	cp playground/main.py /media/$(USER)/CIRCUITPY/main.py
-	cp lib/led_matrix.py /media/$(USER)/CIRCUITPY/lib
-	cp -a playground /media/$(USER)/CIRCUITPY/
+#install-playground:
+#	cp playground/main.py /media/$(USER)/CIRCUITPY/main.py
+#	cp lib/led_matrix.py /media/$(USER)/CIRCUITPY/lib
+#	cp -a playground /media/$(USER)/CIRCUITPY/
 
 install-gol: /media/$(USER)/CIRCUITPY/settings.toml
 	cp game_of_life/main.py /media/$(USER)/CIRCUITPY/main.py
