@@ -105,3 +105,12 @@ def clean(ctx, project=None):
         if os.path.exists(prj_path):
             print(f"==> Removing {prj_path} ...")
             shutil.rmtree(prj_path, onexc=util.not_found)
+
+
+@task(aliases=["list"])
+def view(ctx):
+    """ View / List the contents of the device """
+    if shutil.which("tree"):
+        ctx.run(f"tree {util.BASE_DEST}")
+    else:
+        ctx.run(f"ls -1FR {util.BASE_DEST}")
