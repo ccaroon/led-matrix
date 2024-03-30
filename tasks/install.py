@@ -1,76 +1,107 @@
 import os
-# import pathlib
 import shutil
-
 from invoke import task
 
-USER = os.environ.get("USER")
-# BASE_DEST = f"/media/{USER}/CIRCUITPY"
-BASE_DEST = f"/tmp/{USER}/CIRCUITPY"
+import util
 
 
 @task
+def settings(ctx):
+    """ Install settings.toml """
+    util.cp_if_newer("settings.toml", f"{util.BASE_DEST}/settings.toml")
+
+
+@task
+def main(ctx, file):
+    """
+    Always copy given file as `main.py`
+
+    Args:
+        file (str): Path of file to install as `main.py`
+    """
+    print(f"==> {file}")
+    shutil.copy(file, f"{util.BASE_DEST}/main.py")
+
+
+@task
+def file(ctx, file):
+    """
+    Copy given file to device
+
+    Args:
+        file (str): Path of the file to copy
+    """
+    util.cp_if_newer(file, f"{util.BASE_DEST}/{file}")
+
+
+@task(settings)
 def playground(ctx):
-    # `dest` is relative to BASE_DEST
-    src_code = (
-        {"src": "playground/main.py", "dest": "/"},
-        {"src": "lib/led_matrix.py", "dest": "/lib"}
+    """ Install the Playground project """
+    src_code = {
+        "module": "playground",
+        "main":   "playground/main.py",
+        "libs": [
+            "led_matrix.py"
+        ]
+    }
 
-    )
-
-    for file in src_code:
-        src = file["src"]
-        src_name = os.path.basename(src)
-        dest = f"{BASE_DEST}{file["dest"]}/{src_name}"
-        __cp_if_newer(src, dest)
+    util.install_project(src_code)
 
 
-# with ctx.cd(__docs_dir()):
-#     ctx.run("sphinx-build -M html . _build")
+@task(pre=[settings], aliases=["gol"])
+def game_of_life(ctx):
+    """ Install the Game Of Life project """
 
-#
-# Helper functions
-#
+    src_code = {
+        "module": "game_of_life",
+        "main": "game_of_life/main.py",
+        "libs": [
+            "led_matrix.py"
+        ]
+    }
 
-
-def __cp_tree(src, dest):
-    """
-    Copy files from a src directory to a dest directory.
-
-    Args:
-        src (str): Source Directory
-        dest (str: Destination Directory
-    """
-    shutil.copytree(src, dest, copy_function=__cp_if_newer, dirs_exist_ok=True)
+    util.install_project(src_code)
 
 
-def __cp_if_newer(src, dest):
-    """
-    Copy src to dest, but only if src is newer than dest.
+@task(settings)
+def info_panel(ctx):
+    """ Install the InfoPanel project """
 
-    Args:
-        src (str): Full path of src file
-        dest (str): Full path of dest file
-    """
-    if not os.path.exists(dest) or __is_newer(src, dest):
-        print(f"==> {src} -> {dest}...")
-        dst_path = os.path.dirname(dest)
-        os.makedirs(dst_path, exist_ok=True)
-        shutil.copy(src, dest)
+    src_code = {
+        "module": "info_panel",
+        "main": "info_panel/main.py",
+        "libs": [
+            "colors",
+            "aio.py",
+            "chronos.py",
+            "led_matrix.py",
+            "my_wifi.py"
+        ]
+    }
+
+    util.install_project(src_code)
 
 
-def __is_newer(file1, file2):
-    """
-    Is `file1` newer than `file2`?
+@task
+def clean(ctx, project=None):
+    """ Remove / Cleanup currently install project """
 
-    Args:
-        file1 (str): Path to a file
-        file2 (str): Path to a file
+    # files
+    for file in ("main.py", "settings.toml"):
+        path = f"{util.BASE_DEST}/{file}"
+        if os.path.exists(path):
+            print(f"==> Removing {path} ...")
+            os.remove(path)
 
-    Returns:
-        boolean: True if file1 is newer than file2, False otherwise
-    """
-    mt1 = os.path.getmtime(file1)
-    mt2 = os.path.getmtime(file2)
+    # lib
+    lib_path = f"{util.BASE_DEST}/lib"
+    if os.path.exists(lib_path):
+        print(f"==> Removing {lib_path} ...")
+        shutil.rmtree(lib_path, onexc=util.not_found)
 
-    return mt1 > mt2
+    # project
+    if project is not None:
+        prj_path = f"{util.BASE_DEST}/{project}"
+        if os.path.exists(prj_path):
+            print(f"==> Removing {prj_path} ...")
+            shutil.rmtree(prj_path, onexc=util.not_found)
