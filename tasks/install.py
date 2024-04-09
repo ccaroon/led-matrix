@@ -64,6 +64,21 @@ def game_of_life(ctx):
 
 
 @task(settings)
+def boids(ctx):
+    """ Install the Boids project """
+
+    src_code = {
+        "module": "boids",
+        "main": "boids/main.py",
+        "libs": [
+            "led_matrix.py"
+        ]
+    }
+
+    util.install_project(src_code)
+
+
+@task(settings)
 def info_panel(ctx):
     """ Install the InfoPanel project """
 
