@@ -7,6 +7,7 @@ import time
 
 import displayio
 
+
 class Boid:
     MAX_HISTORY = 2
 
@@ -27,6 +28,20 @@ class Boid:
 
     def __str__(self):
         return self.__repr__()
+
+    # Speed will naturally vary in flocking behavior, but real animals can't go
+    # arbitrarily fast.
+    def adjust_speed(self, limit=15):
+        speed = math.sqrt(self.dx ** 2 + self.dy ** 2)
+        if speed > limit:
+            self.dx = (self.dx / speed) * limit
+            self.dy = (self.dy / speed) * limit
+
+    def distance_to(self, other_boid):
+        return math.sqrt(
+            (self.x - other_boid.x) * (self.x - other_boid.x) +
+            (self.y - other_boid.y) * (self.y - other_boid.y)
+        )
 
     def update_history(self):
         self.history.append((self.x, self.y))
@@ -69,7 +84,7 @@ class BoidSimulation:
         self.__count = kwargs.get("count", random.randint(50, 101))
         self.__iteration_count = kwargs.get("iterations", 500)
         self.__delay = kwargs.get("delay", 0.075)
-        self.__perch_chance = kwargs.get("perch_chance", random.randint(10, 50))
+        self.__perch_chance = kwargs.get("perch_chance", random.randint(10, 50)) / 100.0
         self.__trails = kwargs.get("trails", random.choice((True, False)))
         # self.__debug = kwargs.get("debug", False)
 
@@ -90,13 +105,6 @@ class BoidSimulation:
             self.__boids.append(
                 Boid(x, y)
             )
-
-    # TODO: maybe this should be a method on Boid
-    def __distance(self, boid1, boid2):
-        return math.sqrt(
-            (boid1.x - boid2.x) * (boid1.x - boid2.x) +
-            (boid1.y - boid2.y) * (boid1.y - boid2.y)
-        )
 
     # Constrain a boid to within the window. If it gets too close to an edge,
     # nudge it back in and reverse its direction.
@@ -131,7 +139,7 @@ class BoidSimulation:
         num_neighbors = 0
 
         for other_boid in self.__boids:
-            if self.__distance(boid, other_boid) < self.VISUAL_RANGE:
+            if boid.distance_to(other_boid) < self.VISUAL_RANGE:
                 center_x += other_boid.x
                 center_y += other_boid.y
                 num_neighbors += 1
@@ -156,7 +164,7 @@ class BoidSimulation:
 
         for other_boid in self.__boids:
             if other_boid is not boid:
-                if self.__distance(boid, other_boid) < min_distance:
+                if boid.distance_to(other_boid) < min_distance:
                     move_x += boid.x - other_boid.x
                     move_y += boid.y - other_boid.y
 
@@ -174,7 +182,7 @@ class BoidSimulation:
         num_neighbors = 0
 
         for other_boid in self.__boids:
-            if self.__distance(boid, other_boid) < self.VISUAL_RANGE:
+            if boid.distance_to(other_boid) < self.VISUAL_RANGE:
                 avg_dx += other_boid.dx
                 avg_dy += other_boid.dy
                 num_neighbors += 1
@@ -186,27 +194,17 @@ class BoidSimulation:
             boid.dx += (avg_dx - boid.dx) * matching_factor
             boid.dy += (avg_dy - boid.dy) * matching_factor
 
-    # Speed will naturally vary in flocking behavior, but real animals can't go
-    # arbitrarily fast.
-    # TODO: move to Boid?
-    def __limit_speed(self, boid):
-        speed_limit = 15
-
-        speed = math.sqrt(boid.dx * boid.dx + boid.dy * boid.dy)
-        if speed > speed_limit:
-            boid.dx = (boid.dx / speed) * speed_limit
-            boid.dy = (boid.dy / speed) * speed_limit
-
     # Random primary color
     def __random_color(self):
         color = (
-        (0x0000ff if random.random() > .33 else 0) |
-        (0x00ff00 if random.random() > .33 else 0) |
-        (0xff0000 if random.random() > .33 else 0)) or 0xffffff
+            (0x0000ff if random.random() > .33 else 0) |
+            (0x00ff00 if random.random() > .33 else 0) |
+            (0xff0000 if random.random() > .33 else 0)
+        ) or 0xffffff
 
         return color
 
-    def add(self, loc:tuple=None):
+    def add(self, loc: tuple = None):
         # Add a new Boid
         row = loc[0] if loc is not None else self.__height // 2
         col = loc[1] if loc is not None else self.__width // 2
@@ -233,7 +231,7 @@ class BoidSimulation:
                 self.__fly_towards_center(boid)
                 self.__avoid_others(boid)
                 self.__match_velocity(boid)
-                self.__limit_speed(boid)
+                boid.adjust_speed(limit=15)
                 self.__keep_within_bounds(boid)
 
                 # Update the position based on the current velocity

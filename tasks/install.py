@@ -39,7 +39,7 @@ def playground(ctx):
     """ Install the Playground project """
     src_code = {
         "module": "playground",
-        "main":   "playground/main.py",
+        "main": "playground/main.py",
         "libs": [
             "led_matrix.py"
         ]
@@ -72,6 +72,9 @@ def boids(ctx):
         "main": "boids/main.py",
         "libs": [
             "led_matrix.py"
+        ],
+        "ignore": [
+            "README.md"
         ]
     }
 

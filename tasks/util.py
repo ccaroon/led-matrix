@@ -4,13 +4,18 @@ import shutil
 USER = os.environ.get("USER")
 BASE_DEST = f"/media/{USER}/CIRCUITPY"
 
+
 # -- FOR TESTING --
 # BASE_DEST = f"/tmp/{USER}/CIRCUITPY"
 
 
 def install_project(src_code):
     # Install Module
-    cp_tree(src_code["module"], f"{BASE_DEST}")
+    cp_tree(
+        src_code["module"],
+        f"{BASE_DEST}",
+        ignore=src_code.get("ignore", [])
+    )
 
     # Install Main
     cp_if_newer(src_code["main"], f"{BASE_DEST}/main.py")
@@ -25,7 +30,7 @@ def install_project(src_code):
             cp_if_newer(src, f"{dest_dir}/{file}")
 
 
-def cp_tree(src, dest):
+def cp_tree(src, dest, **kwargs):
     """
     Copy files from a src directory to a dest directory.
 
@@ -33,7 +38,13 @@ def cp_tree(src, dest):
         src (str): Source Directory
         dest (str: Destination Directory
     """
-    shutil.copytree(src, f"{dest}/{os.path.basename(src)}", copy_function=cp_if_newer, dirs_exist_ok=True)
+    shutil.copytree(
+        src,
+        f"{dest}/{os.path.basename(src)}",
+        copy_function=cp_if_newer,
+        ignore=lambda src_dir, names: kwargs.get("ignore", []),
+        dirs_exist_ok=True
+    )
 
 
 def cp_if_newer(src, dest):
