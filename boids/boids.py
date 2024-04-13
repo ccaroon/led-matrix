@@ -200,7 +200,7 @@ class BoidSimulation:
             (0x0000ff if random.random() > .33 else 0) |
             (0x00ff00 if random.random() > .33 else 0) |
             (0xff0000 if random.random() > .33 else 0)
-        ) or 0xffffff
+        ) or 0x00ff00
 
         return color
 

@@ -5,7 +5,8 @@ from game_of_life.life import GameOfLife
 
 MAX_GENS = 500
 
-display = led_matrix.init_64x64(bit_depth=1)
+# display = led_matrix.init_64x64(bit_depth=1)
+display = led_matrix.init64_XxX(width=128, height=64, bit_depth=1)
 game = GameOfLife(display)
 while True:
     game.seed_board()
