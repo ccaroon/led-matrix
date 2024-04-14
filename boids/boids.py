@@ -9,7 +9,8 @@ import displayio
 
 
 class Boid:
-    MAX_HISTORY = 2
+    # This will also be the length of the trail if displaying trails is ON
+    MAX_HISTORY = 5
 
     def __init__(self, x, y, dx=None, dy=None):
         self.x = x
@@ -251,11 +252,17 @@ class BoidSimulation:
         for boid in self.__boids:
             curr_x = int(boid.x)
             curr_y = int(boid.y)
-            prev_x = int(boid.history[-1][0])
-            prev_y = int(boid.history[-1][1])
-
             self.__bitmap[curr_x, curr_y] = self.COLOR_BOID
-            self.__bitmap[prev_x, prev_y] = self.COLOR_BLACK
+
+            # if trails off -> erase most recent history
+            off_x = int(boid.history[-1][0])
+            off_y = int(boid.history[-1][1])
+            # if trails on -> erase oldest history
+            if self.__trails:
+                off_x = int(boid.history[0][0])
+                off_y = int(boid.history[0][1])
+
+            self.__bitmap[off_x, off_y] = self.COLOR_BLACK
 
     def clear(self):
         for i in range(self.__width * self.__height):
