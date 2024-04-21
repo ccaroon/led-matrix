@@ -3,7 +3,7 @@ import time
 
 import displayio
 
-import led_matrix
+from led_matrix import LEDMatrix
 
 from chronos import Chronos
 from my_wifi import MyWiFi
@@ -28,7 +28,8 @@ Chronos.sync(tz_offset=os.getenv("time.tz_offset"))
 # Chronos.test()
 # Chronos.is_dst()
 
-display = led_matrix.init_64x32()
+matrix = LEDMatrix(64, 32, tile_across=1, tile_down=1, bit_depth=6)
+display = matrix.display
 
 PANEL_ROWS = 2
 PANEL_COLS = 4
