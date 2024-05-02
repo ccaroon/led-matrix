@@ -1,35 +1,51 @@
 import os
 import shutil
+import zipfile
 
 ROOT_DIR = os.path.abspath(f"{os.path.basename(__file__)}/..")
 
 USER = os.environ.get("USER")
 DEVICE_DEST = f"/media/{USER}/CIRCUITPY"
+# CircuitPython Library Bundles
+BUNDLES = {
+    "Adafruit_CircuitPython_Bundle": {
+        "prefix": "adafruit-circuitpython-bundle",
+        "version": ("8", "20240501")
+    },
+    "CircuitPython_Community_Bundle": {
+        "prefix": "circuitpython-community-bundle",
+        "version": ("8", "20240502")
+    }
+}
 
 
 # -- FOR TESTING --
 # DEVICE_DEST = f"/tmp/{USER}/CIRCUITPY"
 
 
-def install_project(src_code):
+def install_project(ctx, prj_data):
     # Install Module
     cp_tree(
-        src_code["module"],
+        prj_data["module"],
         f"{DEVICE_DEST}",
-        ignore=src_code.get("ignore", [])
+        ignore=prj_data.get("ignore", [])
     )
 
     # Install Main
-    cp_if_newer(src_code["main"], f"{DEVICE_DEST}/main.py")
+    cp_if_newer(prj_data["main"], f"{DEVICE_DEST}/main.py")
 
     # Install Libs
-    for file in src_code["libs"]:
+    for file in prj_data["libs"]:
         src = f"lib/{file}"
         dest_dir = f"{DEVICE_DEST}/lib"
         if os.path.isdir(src):
             cp_tree(src, dest_dir)
         else:
             cp_if_newer(src, f"{dest_dir}/{file}")
+
+    # Install requirements
+    if prj_data["requirements"]:
+        install_requirements(ctx, prj_data["requirements"])
 
 
 def cp_tree(src, dest, **kwargs):
@@ -85,13 +101,49 @@ def not_found(func, path, exc_info):
     print(f"=> {path} ... Nothing to do!")
 
 
-def read_requirements(file):
-    reqs = []
-    with open(file, "r") as fptr:
-        line = fptr.readline().strip()
-        while line:
-            if not line.startswith("#"):
-                reqs.append(line)
-            line = fptr.readline().strip()
-    return reqs
+# TODO: Allow `requirements` section to override CPY & Bundle Versions
+def install_requirements(ctx, reqs_list):
+    """ Install CircuitPython Requirements """
     
+    # Make download dir
+    download_dir = f"{ROOT_DIR}/.circuit-python"
+    os.makedirs(download_dir, exist_ok=True)
+    
+    for bundle_name, bundle in BUNDLES.items():
+        prefix = bundle["prefix"]
+        cpy_version = bundle["version"][0]
+        bnd_version = bundle["version"][1]
+        # Download libs from cpy site if not exist
+        zip_file = f"{prefix}-{cpy_version}.x-mpy-{bnd_version}.zip"
+        if not os.path.exists(f"{download_dir}/{zip_file}"):
+            print(f"=> Downloading {zip_file}...")
+            with ctx.cd(download_dir):
+                ctx.run(f"wget -q https://github.com/adafruit/{bundle_name}/releases/download/{bnd_version}/{zip_file}")
+
+            # unzip
+            print(f"=> Extracting {zip_file}...")
+            with zipfile.ZipFile(f"{download_dir}/{zip_file}", 'r') as ziptr:
+                ziptr.extractall(path=download_dir)
+
+    # cp reqs to device
+    for req in reqs_list:
+        bundle_name = os.path.dirname(req) or "Adafruit_CircuitPython_Bundle"
+        bundle = BUNDLES.get(bundle_name)
+        bundle_prefix = bundle["prefix"]
+        bundle_version = bundle["version"]
+        bundle_dir = f"{bundle_prefix}-{bundle_version[0]}.x-mpy-{bundle_version[1]}"
+        
+        pkg_name = os.path.basename(req)
+
+        src = f"{download_dir}/{bundle_dir}/lib/{pkg_name}"
+        dst = f"{DEVICE_DEST}/lib"
+        if os.path.isfile(src):
+            cp_if_newer(src, f"{dst}/{pkg_name}")
+        elif os.path.isdir(src):
+            cp_tree(src, dst)
+
+
+
+
+
+# 

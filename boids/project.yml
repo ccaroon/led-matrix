@@ -1,0 +1,11 @@
+---
+module: boids
+main: boids/main.py
+libs:
+  - led_matrix.py
+ignore:
+  - README.md
+requirements:
+  - adafruit_matrixportal
+  - adafruit_portalbase
+  - neopixel.mpy

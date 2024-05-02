@@ -1,0 +1,9 @@
+---
+module: game_of_life
+main: game_of_life/main.py
+libs:
+  - led_matrix.py
+requirements:
+  - adafruit_matrixportal
+  - adafruit_portalbase
+  - neopixel.mpy
