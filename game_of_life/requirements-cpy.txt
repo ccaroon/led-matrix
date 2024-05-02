@@ -1,0 +1,4 @@
+## Required AdaFruit Libs
+adafruit_matrixportal
+adafruit_portalbase
+neopixel.mpy

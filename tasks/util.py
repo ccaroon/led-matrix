@@ -1,29 +1,31 @@
 import os
 import shutil
 
+ROOT_DIR = os.path.abspath(f"{os.path.basename(__file__)}/..")
+
 USER = os.environ.get("USER")
-BASE_DEST = f"/media/{USER}/CIRCUITPY"
+DEVICE_DEST = f"/media/{USER}/CIRCUITPY"
 
 
 # -- FOR TESTING --
-# BASE_DEST = f"/tmp/{USER}/CIRCUITPY"
+# DEVICE_DEST = f"/tmp/{USER}/CIRCUITPY"
 
 
 def install_project(src_code):
     # Install Module
     cp_tree(
         src_code["module"],
-        f"{BASE_DEST}",
+        f"{DEVICE_DEST}",
         ignore=src_code.get("ignore", [])
     )
 
     # Install Main
-    cp_if_newer(src_code["main"], f"{BASE_DEST}/main.py")
+    cp_if_newer(src_code["main"], f"{DEVICE_DEST}/main.py")
 
     # Install Libs
     for file in src_code["libs"]:
         src = f"lib/{file}"
-        dest_dir = f"{BASE_DEST}/lib"
+        dest_dir = f"{DEVICE_DEST}/lib"
         if os.path.isdir(src):
             cp_tree(src, dest_dir)
         else:
@@ -81,3 +83,15 @@ def is_newer(file1, file2):
 
 def not_found(func, path, exc_info):
     print(f"=> {path} ... Nothing to do!")
+
+
+def read_requirements(file):
+    reqs = []
+    with open(file, "r") as fptr:
+        line = fptr.readline().strip()
+        while line:
+            if not line.startswith("#"):
+                reqs.append(line)
+            line = fptr.readline().strip()
+    return reqs
+    
