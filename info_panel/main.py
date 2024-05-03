@@ -18,7 +18,7 @@ from info_panel.debugger.panel import DebugPanel
 from info_panel.fibonacci_clock.panel import FibonacciClock
 from info_panel.iss.panel import ISSPanel
 from info_panel.message.panel import MessagePanel
-from info_panel.moon.panel import MoonPanel
+# from info_panel.moon.panel import MoonPanel
 from info_panel.weather.panel import WeatherPanel
 
 MyWiFi.autoconnect()

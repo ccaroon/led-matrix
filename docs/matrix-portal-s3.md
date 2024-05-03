@@ -22,6 +22,35 @@ LED Matrix Driver Board
 * Down button is attached to `board.BUTTON_DOWN` and Arduino 7.
 * NOTE: buttons do not have any pull-up resistors connect; pressing either of them pulls the input low.
 
+## Init Board
+### Enter ROM bootloader mode
+Entering the ROM bootloader is easy. Complete the following steps.
+
+Before you start, make sure your ESP32-S2/S3 is plugged into USB port to your computer using a data/sync cable. Charge-only cables will not work!
+
+1. Press and hold the BOOT/DFU button down. Don't let go of it yet!
+2. Press and release the Reset button. You should still have the BOOT/DFU button pressed while you do this.
+3. Now you can release the BOOT/DFU button.
+
+No USB drive will appear when you've entered the ROM bootloader. This is normal!
+
+### Repair UF2 Bootloader
+1. Test:  `esptool.py --port /dev/PORT chip_id`
+2. Erase: `esptool.py --port /dev/PORT erase_flash`
+3. Flash: `esptool.py --port /dev/PORT write_flash 0x0 firmware/MatrixPortal_S3_FactoryReset.bin`
+4. Reset: Push the reset button
+
+### Install CircuitPython
+1. UF2 Mode:
+  - Click the Reset button on your board.
+  - When you see the NeoPixel RGB LED turn purple, press it again.
+  - At that point, the NeoPixel should turn green. If it turns red, check the USB cable, try another USB port, etc.
+  - A Drive named "MATRXS3BOOT" should appear.
+2. Drag the UF2 installer file onto the "MATRXS3BOOT" drive
+3. The LED will flash for a bit & the "MATRXS3BOOT" drive will disappear
+4. A drive named "CIRCUITPYTHON" should appear.
+5. Done.
+
 ## Development
 * PortalBase: https://docs.circuitpython.org/projects/portalbase/en/latest/index.html
 * MatrixPortal: https://docs.circuitpython.org/projects/matrixportal/en/latest/
@@ -30,3 +59,13 @@ LED Matrix Driver Board
   - https://learn.adafruit.com/circuitpython-display-support-using-displayio
 * Matrices with CPy: https://learn.adafruit.com/rgb-led-matrices-matrix-panels-with-circuitpython
 * Chaining: https://learn.adafruit.com/rgb-led-matrices-matrix-panels-with-circuitpython/advanced-multiple-panels
+
+
+
+
+
+
+
+
+
+.
