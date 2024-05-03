@@ -5,22 +5,24 @@ import zipfile
 ROOT_DIR = os.path.abspath(f"{os.path.basename(__file__)}/..")
 
 USER = os.environ.get("USER")
-DEVICE_DEST = f"/media/{USER}/CIRCUITPY"
+
+DEVICE_TST = f"/tmp/{USER}/CIRCUITPY"
+DEVICE_MAC = "/Volumes/CIRCUITPY"
+DEVICE_LNX = f"/media/{USER}/CIRCUITPY"
+
+DEVICE_DEST = DEVICE_MAC
+
 # CircuitPython Library Bundles
 BUNDLES = {
     "Adafruit_CircuitPython_Bundle": {
         "prefix": "adafruit-circuitpython-bundle",
-        "version": ("8", "20240501")
+        "version": ("9", "20240503")
     },
     "CircuitPython_Community_Bundle": {
         "prefix": "circuitpython-community-bundle",
-        "version": ("8", "20240502")
+        "version": ("9", "20240502")
     }
 }
-
-
-# -- FOR TESTING --
-# DEVICE_DEST = f"/tmp/{USER}/CIRCUITPY"
 
 
 def install_project(ctx, prj_data):
@@ -141,6 +143,8 @@ def install_requirements(ctx, reqs_list):
             cp_if_newer(src, f"{dst}/{pkg_name}")
         elif os.path.isdir(src):
             cp_tree(src, dst)
+        else:
+            print(f"WARNING: Cant' find: {src}")
 
 
 
