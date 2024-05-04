@@ -3,6 +3,8 @@ LED Matrix Driver Board
 
 ## Links
 * Board: https://www.adafruit.com/product/5778
+* RGB LED Matrix (64x32): https://www.adafruit.com/product/5036
+* RGB LED Matrix (64x64): https://www.adafruit.com/product/3649
 * Tutorial: https://learn.adafruit.com/adafruit-matrixportal-s3
 * Bootloader Repair: https://learn.adafruit.com/adafruit-matrixportal-s3/factory-reset#factory-reset-and-bootloader-repair-3107941
 * Python: https://circuitpython.org/board/adafruit_matrixportal_s3/
