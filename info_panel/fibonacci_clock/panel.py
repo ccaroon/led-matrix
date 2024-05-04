@@ -136,10 +136,10 @@ class FibonacciClock(Panel):
     COLOR_HOURS = 1
     COLOR_MINUTES = 2
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, scale=1):
         palette = HolidayColors.palette()
         palette.add_colors(SeasonColors.colors())
-        super().__init__(x, y, palette)
+        super().__init__(x, y, palette, scale=scale)
 
     def __number_to_boxes(self, number):
         choices = self.NUMBER_MAP[number]

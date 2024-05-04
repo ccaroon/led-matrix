@@ -16,10 +16,10 @@ class DigitalClock(Panel):
     AM_PM_X = 4
     AM_PM_Y = TIME_Y + 6
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, scale=1):
         palette = HolidayColors.palette()
         palette.add_colors(SeasonColors.colors())
-        super().__init__(x, y, palette)
+        super().__init__(x, y, palette, scale=scale)
 
         self.__curr_hour = None
         self.__curr_min  = None

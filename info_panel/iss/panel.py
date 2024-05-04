@@ -10,8 +10,8 @@ from info_panel.iss.gps_area import GPSArea
 class ISSPanel(Panel):
     UPDATE_INTERVAL = 10
 
-    def __init__(self, x, y):
-        super().__init__(x, y, BasicColors.palette())
+    def __init__(self, x, y, scale=1):
+        super().__init__(x, y, BasicColors.palette(), scale=scale)
 
         durham = GPSArea.from_file(
             "info_panel/iss/data/durham.coords", reverse=True

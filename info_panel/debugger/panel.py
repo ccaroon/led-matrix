@@ -8,8 +8,8 @@ from lib.colors.season import Season as SeasonColors
 class DebugPanel(Panel):
     UPDATE_INTERVAL = 2.5 * 60
 
-    def __init__(self, x, y):
-        super().__init__(x, y, SeasonColors.palette())
+    def __init__(self, x, y, scale=1):
+        super().__init__(x, y, SeasonColors.palette(), scale=scale)
 
         self.__colors = SeasonColors.get("current")
         self.__count = 0

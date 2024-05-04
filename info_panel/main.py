@@ -10,7 +10,25 @@ from my_wifi import MyWiFi
 
 from lib.colors.color import Color
 # **MUST** set the ORDER (iff not normal) before importing other Color classes
-Color.ORDER = ("R", "B", "G")
+
+MATRICES = {
+    "small": {
+        "width": 64,
+        "height": 32,
+        "scale": 1,
+        "tile_across": 1
+    },
+    "large": {
+        "width": 64,
+        "height": 64,
+        "scale": 2,
+        "tile_across": 2
+    }
+}
+MATRIX = MATRICES["large"]
+
+if MATRIX["height"] == 32:
+    Color.ORDER = ("R", "B", "G")
 
 from info_panel.binary_clock.panel import BinaryClock
 from info_panel.digital_clock.panel import DigitalClock
@@ -28,7 +46,12 @@ Chronos.sync(tz_offset=os.getenv("time.tz_offset"))
 # Chronos.test()
 # Chronos.is_dst()
 
-matrix = LEDMatrix(64, 32, tile_across=1, tile_down=1, bit_depth=6)
+matrix = LEDMatrix(
+    MATRIX["width"], MATRIX["height"],
+    tile_across=MATRIX["tile_across"],
+    tile_down=1,
+    bit_depth=4
+)
 display = matrix.display
 
 PANEL_ROWS = 2
@@ -63,15 +86,15 @@ PANEL_LAYOUT = {
 
 # Digital Clock
 pos = panel_pos(PANEL_LAYOUT["DigitalClock"])
-digi_clock = DigitalClock(pos[0], pos[1])
+digi_clock = DigitalClock(pos[0], pos[1], scale=MATRIX["scale"])
 
 # Weather
 pos = panel_pos(PANEL_LAYOUT["Weather"])
-weather = WeatherPanel(pos[0], pos[1])
+weather = WeatherPanel(pos[0], pos[1], scale=MATRIX["scale"])
 
 # Binary Clock
 pos = panel_pos(PANEL_LAYOUT["BinaryClock"])
-bin_clock = BinaryClock(pos[0], pos[1])
+bin_clock = BinaryClock(pos[0], pos[1], scale=MATRIX["scale"])
 
 # Debugger
 # pos = panel_pos(PANEL_LAYOUT["Debugger"])
@@ -79,17 +102,17 @@ bin_clock = BinaryClock(pos[0], pos[1])
 
 # Fibonacci Clock
 pos = panel_pos(PANEL_LAYOUT["FibonacciClock"])
-fib_clock = FibonacciClock(pos[0], pos[1])
+fib_clock = FibonacciClock(pos[0], pos[1], scale=MATRIX["scale"])
 
 # ISS Tracker
 pos = panel_pos(PANEL_LAYOUT["ISSTracker"])
-iss = ISSPanel(pos[0], pos[1])
+iss = ISSPanel(pos[0], pos[1], scale=MATRIX["scale"])
 
 # Message Panel -- Takes up panels 4,5,6
 pos = panel_pos(PANEL_LAYOUT["MessagePanel"])
 # Shift X 1/2 a PANEL_WIDTH
 # mp_x = pos[0] + (PANEL_WIDTH // 2)
-message = MessagePanel(pos[0], pos[1])
+message = MessagePanel(pos[0], pos[1], scale=MATRIX["scale"])
 
 # Moon Phase
 # pos = panel_pos(PANEL_LAYOUT["MoonPhase"])

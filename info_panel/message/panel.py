@@ -20,13 +20,14 @@ class MessagePanel(Panel):
     # -2 -> 1 pixel on each side for the border
     MAX_LINE_LEN = WIDTH - 2
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, scale=1):
         palette = HolidayColors.palette()
         palette.add_colors(SeasonColors.colors())
         super().__init__(
             x, y,
             palette,
-            width=self.WIDTH, height=self.HEIGHT
+            width=self.WIDTH, height=self.HEIGHT,
+            scale=scale
         )
 
         self.__curr_msg = None

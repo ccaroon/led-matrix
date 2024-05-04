@@ -55,10 +55,10 @@ class BinaryClock(Panel):
         )
     ]
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, scale=1):
         palette = HolidayColors.palette()
         palette.add_colors(SeasonColors.colors())
-        super().__init__(x, y, palette)
+        super().__init__(x, y, palette, scale=scale)
 
         self.__curr_day  = None
         self.__curr_hour = None

@@ -39,8 +39,8 @@ class WeatherPanel(Panel):
     CURR_Y = 1
     HILO_Y = 9
 
-    def __init__(self, x, y):
-        super().__init__(x, y, WeatherColors.palette())
+    def __init__(self, x, y, scale=1):
+        super().__init__(x, y, WeatherColors.palette(), scale=scale)
 
         self.__aio = AdafruitIO(
             MyWiFi.REQUESTS,
