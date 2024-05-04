@@ -132,9 +132,11 @@ main_group.append(message)
 
 display.root_group = main_group
 
+display.auto_refresh = False
 while True:
     # print(f"--> tick:{count}")
     for panel in main_group:
         panel.update()
+        display.refresh()
 
     time.sleep(1)
