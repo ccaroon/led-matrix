@@ -132,11 +132,33 @@ main_group.append(message)
 
 display.root_group = main_group
 
+# TODO: Move / clean-up this code
+ON_TIME = 900
+OFF_TIME = 2359
+IS_ON = True
+
+def in_on_window(time_code):
+    return time_code >= ON_TIME and time_code < OFF_TIME
+
+def time_code():
+    now = time.localtime()
+    return (now.tm_hour * 100) + now.tm_min
+
 display.auto_refresh = False
 while True:
-    # print(f"--> tick:{count}")
-    for panel in main_group:
-        panel.update()
+    now = time_code()
+    if not IS_ON and in_on_window(now):
+        IS_ON = True
+        display.brightness = 1.0
         display.refresh()
+    elif IS_ON and not in_on_window(now):
+        IS_ON = False
+        display.brightness = 0.0
+        display.refresh()
+
+    if IS_ON:
+        for panel in main_group:
+            panel.update()
+            display.refresh()
 
     time.sleep(1)

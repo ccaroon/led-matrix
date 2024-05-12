@@ -36,9 +36,19 @@ def file(ctx, file):
     util.cp_if_newer(file, f"{util.DEVICE_DEST}/{file}")
 
 
-@task(settings)
-def project(ctx, project_path):
+@task(
+    pre=[settings],
+    help={
+        "path": "Path to project directory or project.yml file."
+    }
+)
+def project(ctx, path):
     """ Install the named Project and Dependencies """
+
+    project_path = path
+    if os.path.isdir(path):
+        project_path = f"{path}/project.yml"
+
     with open(project_path, "r") as fptr:
         project_data = yaml.safe_load(fptr)
 
