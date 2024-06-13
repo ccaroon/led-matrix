@@ -5,12 +5,9 @@ from invoke import Collection, task
 import install
 import util
 
-MAC_PORT = "/dev/tty.usbmodem84722E93560F1"
-LNX_PORT = "/dev/ttyACM0"
-SHELL_PORT = LNX_PORT
 
 @task
-def shell(ctx, port=SHELL_PORT):
+def shell(ctx, port=util.SHELL_PORT):
     """ Use picocom to run the REPL """
 
     # NOTE: doesn't behave properly with run()...even with pty=True

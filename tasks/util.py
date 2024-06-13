@@ -6,11 +6,21 @@ ROOT_DIR = os.path.abspath(f"{os.path.basename(__file__)}/..")
 
 USER = os.environ.get("USER")
 
-DEVICE_TST = f"/tmp/{USER}/CIRCUITPY"
-DEVICE_MAC = "/Volumes/CIRCUITPY"
-DEVICE_LNX = f"/media/{USER}/CIRCUITPY"
+# Development System Setup
+__DEV_OS = "linux"
 
-DEVICE_DEST = DEVICE_LNX
+__DEVICES = {
+    "test": f"/tmp/{USER}/CIRCUITPY",
+    "linux": f"/media/{USER}/CIRCUITPY",
+    "mac": "/Volumes/CIRCUITPY"
+}
+DEVICE_DEST = __DEVICES[__DEV_OS]
+
+__PORTS = {
+    "linux": "/dev/ttyACM0",
+    "mac": "/dev/tty.usbmodem84722E93560F1"
+}
+SHELL_PORT = __PORTS[__DEV_OS]
 
 # CircuitPython Library Bundles
 BUNDLES = {

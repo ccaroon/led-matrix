@@ -49,50 +49,56 @@ class ISSPanel(Panel):
 
     def _update_display(self):
         # Get ISS position
-        resp = MyWiFi.REQUESTS.get("http://api.open-notify.org/iss-now.json")
-        if resp.status_code == 200:
-            data = resp.json()
-            iss_coords = (
-                float(data['iss_position']['latitude']),
-                float(data['iss_position']['longitude'])
-            )
-            # Check list of places
-            curr_place = None
-            for place in self.__places:
-                # print(f"Checking '{place['name']}' [{place['color']}]")
-                if place['area'].contains(iss_coords):
-                    curr_place = place
+        try:
+            resp = MyWiFi.REQUESTS.get("http://api.open-notify.org/iss-now.json", timeout=self.UPDATE_INTERVAL // 2)
+            if resp.status_code == 200:
+                data = resp.json()
+                iss_coords = (
+                    float(data['iss_position']['latitude']),
+                    float(data['iss_position']['longitude'])
+                )
+                # Check list of places
+                curr_place = None
+                for place in self.__places:
+                    # print(f"Checking '{place['name']}' [{place['color']}]")
+                    if place['area'].contains(iss_coords):
+                        curr_place = place
 
-            # Display results
-            if curr_place != self.__last_place:
-                print(f"Place: {self.__last_place} -> {curr_place}")
-                self.__last_place = curr_place
-                if curr_place:
-                    self.__draw_icon(
-                        Icons.ICONS.get(curr_place['name']),
-                        (
-                            self._palette.from_name("black"),
-                            self._palette.from_color(curr_place['color']),
-                            self._palette.from_color(curr_place['color']),
+                # Display results
+                if curr_place != self.__last_place:
+                    print(f"Place: {self.__last_place} -> {curr_place}")
+                    self.__last_place = curr_place
+                    if curr_place:
+                        self.__draw_icon(
+                            Icons.ICONS.get(curr_place['name']),
+                            (
+                                self._palette.from_name("black"),
+                                self._palette.from_color(curr_place['color']),
+                                self._palette.from_color(curr_place['color']),
+                            )
                         )
-                    )
-                    print(f"{Chronos.datetime_str()} - The ISS is currently over {curr_place['name']}.")
-                else:
-                    self.__draw_icon(
-                        Icons.ICONS.get("Earth"),
-                        (
-                            self._palette.from_name("black"),
-                            self._palette.from_name("blue"),
-                            self._palette.from_name("green"),
-                            self._palette.from_name("white"),
+                        print(f"{Chronos.datetime_str()} - The ISS is currently over {curr_place['name']}.")
+                    else:
+                        self.__draw_icon(
+                            Icons.ICONS.get("Earth"),
+                            (
+                                self._palette.from_name("black"),
+                                self._palette.from_name("blue"),
+                                self._palette.from_name("green"),
+                                self._palette.from_name("white"),
+                            )
                         )
-                    )
-                    iss_pt = random.randint(1, self._bitmap.width * self._bitmap.height)
-                    self._bitmap[iss_pt-1] = self._palette.from_name("white")
+                        iss_pt = random.randint(1, self._bitmap.width * self._bitmap.height)
+                        self._bitmap[iss_pt-1] = self._palette.from_name("white")
 
-                    # print("The ISS is NOT overhead right now.")
-                    # print(f"https://www.google.com/maps/search/{iss_coords[0]},+{iss_coords[1]}/@{iss_coords[0]},{iss_coords[1]},4z")
-        else:
+                        # print("The ISS is NOT overhead right now.")
+                        # print(f"https://www.google.com/maps/search/{iss_coords[0]},+{iss_coords[1]}/@{iss_coords[0]},{iss_coords[1]},4z")
+            else:
+                raise RuntimeError(
+                    f"Request Error: Status [{resp.status_code}] | {resp.content}"
+                )
+        except Exception as exp:
+            self.__last_place = ""
             msg = "Err"
             length = self._strlen(msg, spacing=1)
             center = self._find_center(length, 5)
@@ -102,18 +108,7 @@ class ISSPanel(Panel):
                 msg, BasicColors.get("red"),
                 spacing=1
             )
-            print(resp.content)
-
-
-
-
-
-
-
-
-
-
-
+            print(exp)
 
 
 
