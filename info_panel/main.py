@@ -121,12 +121,12 @@ message = MessagePanel(pos[0], pos[1], scale=MATRIX["scale"])
 # Add Panels to main Display Group
 # Listed in Update Priority Order
 main_group = displayio.Group()
-main_group.append(digi_clock)
+main_group.append(message)
 main_group.append(bin_clock)
-main_group.append(iss)
+main_group.append(digi_clock)
 main_group.append(weather)
 main_group.append(fib_clock)
-main_group.append(message)
+main_group.append(iss)
 # main_group.append(moon)
 # main_group.append(debug)
 
@@ -134,7 +134,7 @@ display.root_group = main_group
 
 # TODO: Move / clean-up this code
 ON_TIME = 900
-OFF_TIME = 2359
+OFF_TIME = 2330
 IS_ON = True
 
 def in_on_window(time_code):

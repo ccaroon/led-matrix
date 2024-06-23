@@ -90,8 +90,9 @@ class WeatherPanel(Panel):
         # print(f"{reading.value} - {reading.age} > {self.OLD_INTERVAL} ({color})")
 
         # center it on x
-        x = (self._bitmap.width // 2) - ((self.GLYPH_W*2) // 2)
-        self._draw_string(x, self.CURR_Y, f"{reading.value}°", color, spacing=1)
+        x = (self._bitmap.width // 2) - ((self.GLYPH_W*3) // 2)
+        curr_temp = reading.value % 100
+        self._draw_string(x, self.CURR_Y, f"{curr_temp:02d}°", color, spacing=1)
 
         # Border - Color based on current temperature
         # ...or ERROR_COLOR if data is "old"
@@ -107,11 +108,12 @@ class WeatherPanel(Panel):
         # => High Temperature
         reading = self.__get_data("temperature-high")
         color = WeatherColors.from_temp(reading.value)
+        high_temp = reading.value % 100
         self._draw_string(
             # x == right edge - width of 2 glyphs
             (self._bitmap.width - 1) - (self.GLYPH_W * 2),
             self.HILO_Y,
-            reading.value, color
+            f"{high_temp:02d}", color
         )
 
         # => Humidity
