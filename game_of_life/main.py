@@ -3,7 +3,7 @@ from game_of_life.life import GameOfLife
 
 MAX_GENS = 500
 
-matrix = LEDMatrix(64, 64, tile_across=2, tile_down=1, bit_depth=1)
+matrix = LEDMatrix(64, 64, tile_across=1, tile_down=1, bit_depth=1)
 game = GameOfLife(matrix.display)
 while True:
     game.seed_board()

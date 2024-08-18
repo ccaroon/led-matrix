@@ -26,11 +26,11 @@ SHELL_PORT = __PORTS[__DEV_OS]
 BUNDLES = {
     "Adafruit_CircuitPython_Bundle": {
         "prefix": "adafruit-circuitpython-bundle",
-        "version": ("9", "20240503")
+        "version": ("9", "20240815")
     },
     "CircuitPython_Community_Bundle": {
         "prefix": "circuitpython-community-bundle",
-        "version": ("9", "20240502")
+        "version": ("9", "20240817")
     }
 }
 
@@ -116,11 +116,11 @@ def not_found(func, path, exc_info):
 # TODO: Allow `requirements` section to override CPY & Bundle Versions
 def install_requirements(ctx, reqs_list):
     """ Install CircuitPython Requirements """
-    
+
     # Make download dir
     download_dir = f"{ROOT_DIR}/.circuit-python"
     os.makedirs(download_dir, exist_ok=True)
-    
+
     for bundle_name, bundle in BUNDLES.items():
         prefix = bundle["prefix"]
         cpy_version = bundle["version"][0]
@@ -144,7 +144,7 @@ def install_requirements(ctx, reqs_list):
         bundle_prefix = bundle["prefix"]
         bundle_version = bundle["version"]
         bundle_dir = f"{bundle_prefix}-{bundle_version[0]}.x-mpy-{bundle_version[1]}"
-        
+
         pkg_name = os.path.basename(req)
 
         src = f"{download_dir}/{bundle_dir}/lib/{pkg_name}"
@@ -160,4 +160,4 @@ def install_requirements(ctx, reqs_list):
 
 
 
-# 
+#
