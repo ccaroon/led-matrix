@@ -199,16 +199,3 @@ class GameOfLife:
     def update_display(self):
         self.__update_groups()
         self.__display.root_group = self.__groups["live"]
-
-
-
-
-
-
-
-
-
-
-
-
-#

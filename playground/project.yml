@@ -1,6 +1,6 @@
 ---
-module: playground
-main: playground/main.py
+package: playground
+entry_point: playground/main.py
 libs:
   - led_matrix.py
 requirements:

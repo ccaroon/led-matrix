@@ -1,6 +1,6 @@
 ---
-module: boids
-main: boids/main.py
+package: boids
+entry_point: boids/main.py
 libs:
   - led_matrix.py
 ignore:

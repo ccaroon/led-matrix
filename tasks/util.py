@@ -1,5 +1,6 @@
 import os
 import shutil
+import yaml
 import zipfile
 
 ROOT_DIR = os.path.abspath(f"{os.path.basename(__file__)}/..")
@@ -35,28 +36,41 @@ BUNDLES = {
 }
 
 
+def load_project(path):
+    project_path = path
+    if os.path.isdir(path):
+        project_path = f"{path}/project.yml"
+
+    with open(project_path, "r") as fptr:
+        project_data = yaml.safe_load(fptr)
+
+    return project_data
+
+
 def install_project(ctx, prj_data):
-    # Install Module
-    cp_tree(
-        prj_data["module"],
-        f"{DEVICE_DEST}",
-        ignore=prj_data.get("ignore", [])
-    )
+    # Install Main Package, if any
+    if prj_data.get("package"):
+        cp_tree(
+            prj_data["package"],
+            f"{DEVICE_DEST}",
+            ignore=prj_data.get("ignore", [])
+        )
 
-    # Install Main
-    cp_if_newer(prj_data["main"], f"{DEVICE_DEST}/main.py")
+    # Other Projects, if any
+    if "projects" in prj_data:
+        for name in prj_data["projects"]:
+            other_data = load_project(name)
+            install_project(ctx, other_data)
 
-    # Install Libs
-    for file in prj_data["libs"]:
-        src = f"lib/{file}"
-        dest_dir = f"{DEVICE_DEST}/lib"
-        if os.path.isdir(src):
-            cp_tree(src, dest_dir)
-        else:
-            cp_if_newer(src, f"{dest_dir}/{file}")
+    # Install Main - Required
+    cp_if_newer(prj_data["entry_point"], f"{DEVICE_DEST}/main.py")
 
-    # Install requirements
-    if prj_data["requirements"]:
+    # Install Libs, if any
+    if "libs" in prj_data:
+        install_libs(ctx, prj_data["libs"])
+
+    # Install requirements, if any
+    if "requirements" in prj_data:
         install_requirements(ctx, prj_data["requirements"])
 
 
@@ -113,6 +127,16 @@ def not_found(func, path, exc_info):
     print(f"=> {path} ... Nothing to do!")
 
 
+def install_libs(ctx, libs):
+    for file in libs:
+        src = f"lib/{file}"
+        dest_dir = f"{DEVICE_DEST}/lib"
+        if os.path.isdir(src):
+            cp_tree(src, dest_dir)
+        else:
+            cp_if_newer(src, f"{dest_dir}/{file}")
+
+
 # TODO: Allow `requirements` section to override CPY & Bundle Versions
 def install_requirements(ctx, reqs_list):
     """ Install CircuitPython Requirements """
@@ -155,9 +179,3 @@ def install_requirements(ctx, reqs_list):
             cp_tree(src, dst)
         else:
             print(f"WARNING: Cant' find: {src}")
-
-
-
-
-
-#

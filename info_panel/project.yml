@@ -1,6 +1,6 @@
 ---
-module: info_panel
-main: info_panel/main.py
+package: info_panel
+entry_point: info_panel/main.py
 libs:
   - aio.py
   - chronos.py

@@ -1,0 +1,12 @@
+---
+package: # Not Needed
+entry_point: mashups/boids_gol.py
+projects:
+  - boids
+  - game_of_life
+ignore:
+  - README.md
+# libs: []
+#   All LIBS are included with dependent projects
+# requirements: []
+#   All REQS are included with dependent projects

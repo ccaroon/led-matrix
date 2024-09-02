@@ -1,6 +1,6 @@
 ---
-module: game_of_life
-main: game_of_life/main.py
+package: game_of_life
+entry_point: game_of_life/main.py
 libs:
   - led_matrix.py
 requirements:

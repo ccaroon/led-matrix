@@ -1,6 +1,5 @@
 import os
 import shutil
-import yaml
 
 from invoke import task
 
@@ -44,40 +43,37 @@ def file(ctx, file):
 )
 def project(ctx, path):
     """ Install the named Project and Dependencies """
-
-    project_path = path
-    if os.path.isdir(path):
-        project_path = f"{path}/project.yml"
-
-    with open(project_path, "r") as fptr:
-        project_data = yaml.safe_load(fptr)
-
+    project_data = util.load_project(path)
     util.install_project(ctx, project_data)
 
 
-@task
-def clean(ctx, project=None):
-    """ Remove / Cleanup currently install project """
+@task(iterable=["package"])
+def clean(ctx, package=None):
+    """
+    Remove files from device.
 
-    # files
+    if `package` is None, only clean basic files.
+    """
+
+    # Basic files
     for file in ("main.py", "settings.toml"):
         path = f"{util.DEVICE_DEST}/{file}"
         if os.path.exists(path):
             print(f"==> Removing {path} ...")
             os.remove(path)
 
-    # lib
+    # `lib` dir - includes "libs" & "requirements"
     lib_path = f"{util.DEVICE_DEST}/lib"
     if os.path.exists(lib_path):
         print(f"==> Removing {lib_path} ...")
         shutil.rmtree(lib_path, onexc=util.not_found)
 
-    # project
-    if project is not None:
-        prj_path = f"{util.DEVICE_DEST}/{project}"
-        if os.path.exists(prj_path):
-            print(f"==> Removing {prj_path} ...")
-            shutil.rmtree(prj_path, onexc=util.not_found)
+    # Any packages
+    for pkg in package:
+        pkg_path = f"{util.DEVICE_DEST}/{pkg}"
+        if os.path.exists(pkg_path):
+            print(f"==> Removing {pkg_path} ...")
+            shutil.rmtree(pkg_path, onexc=util.not_found)
 
 
 @task(aliases=["list"])

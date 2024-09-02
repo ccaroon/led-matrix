@@ -75,7 +75,6 @@ class BoidSimulation:
         grid1 = displayio.TileGrid(self.__bitmap, pixel_shader=palette)
         self.__group1 = displayio.Group()
         self.__group1.append(grid1)
-        self.__display.root_group = self.__group1
 
         self.init(**kwargs)
 
@@ -93,6 +92,7 @@ class BoidSimulation:
         self.__init_boids(pattern=random.choice(("random", "center")))
 
         self.__iteration = 1
+        self.__display.root_group = self.__group1
 
     def __init_boids(self, pattern="random"):
         for _ in range(self.__count):

@@ -61,13 +61,3 @@ No USB drive will appear when you've entered the ROM bootloader. This is normal!
   - https://learn.adafruit.com/circuitpython-display-support-using-displayio
 * Matrices with CPy: https://learn.adafruit.com/rgb-led-matrices-matrix-panels-with-circuitpython
 * Chaining: https://learn.adafruit.com/rgb-led-matrices-matrix-panels-with-circuitpython/advanced-multiple-panels
-
-
-
-
-
-
-
-
-
-.
