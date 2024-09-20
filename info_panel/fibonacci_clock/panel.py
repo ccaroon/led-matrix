@@ -135,6 +135,7 @@ class FibonacciClock(Panel):
     # What color to use from the chosen color_set for each part of the time
     COLOR_HOURS = 1
     COLOR_MINUTES = 2
+    COLOR_BORDER = 3
 
     def __init__(self, x, y, scale=1):
         palette = HolidayColors.palette()
@@ -165,7 +166,7 @@ class FibonacciClock(Panel):
         if not color_set:
             color_set = SeasonColors.get("current")
 
-        self._border(color_set[0])
+        self._border(color_set[self.COLOR_BORDER])
 
         hour = now.tm_hour - 12 if now.tm_hour > 12 else now.tm_hour
         minutes = now.tm_min // 5
@@ -200,5 +201,5 @@ class FibonacciClock(Panel):
                 box_colors[box] += self.COLOR_MINUTES
 
         for box_name, cs_idx in box_colors.items():
-            color = self.BLACK if cs_idx == 0 else color_set[cs_idx]
+            color = self.BLACK if cs_idx == 0 else color_set[cs_idx-1]
             self.__draw_box(box_name, color)
