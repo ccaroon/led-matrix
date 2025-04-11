@@ -91,8 +91,8 @@ PATTERNS = {
     "acorn": __ACORN,
     # "blinker": __BLINKER,
     "bunnies": __BUNNIES,
-    "conway": __CONWAY,
+    # "conway": __CONWAY,
     # "glider": __GLIDER,
-    # "pulsar": __PULSAR,
+    "pulsar": __PULSAR,
     "r-pentomino": __R_PENTOMINO
 }

@@ -1,6 +1,8 @@
 import displayio
 import random
 
+from lib.colors.season import Season as SeasonColors
+
 import game_of_life.patterns as patterns
 
 class GameOfLife:
@@ -24,7 +26,7 @@ class GameOfLife:
 
         palette = displayio.Palette(2)
         palette[self.DEAD] = 0x000000
-        palette[self.ALIVE] = self.__random_color()
+        palette[self.ALIVE] = 0x000000
         self.__palette = palette
 
         # TileGrid & Group1
@@ -116,13 +118,19 @@ class GameOfLife:
     #             board[x,y] = self.DEAD
 
     # Random primary color
-    def __random_color(self):
+    def __random_primary_color(self):
         color = (
         (0x0000ff if random.random() > .33 else 0) |
         (0x00ff00 if random.random() > .33 else 0) |
         (0xff0000 if random.random() > .33 else 0)) or 0xffffff
 
         return color
+
+    def __random_color(self):
+        color_set = SeasonColors.get("current")
+        color = random.choice(color_set)
+
+        return color.value
 
     # Algorithm - 2020 Jeff Epler for Adafruit Industries
     # https://learn.adafruit.com/rgb-led-matrices-matrix-panels-with-circuitpython/example-conways-game-of-life
