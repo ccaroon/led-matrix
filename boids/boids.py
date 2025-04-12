@@ -3,10 +3,10 @@
 #
 import math
 import random
-import time
 
 import displayio
 
+from lib.colors.season import Season as SeasonColors
 
 class Boid:
     # This will also be the length of the trail if displaying trails is ON
@@ -68,8 +68,9 @@ class BoidSimulation:
 
         palette = displayio.Palette(2)
         palette[self.COLOR_BLACK] = 0x000000
-        palette[self.COLOR_BOID] = self.__random_color()
+        palette[self.COLOR_BOID] = 0x000000
         self.__palette = palette
+        self.__color_idx = 0
 
         # TileGrid & Group1
         grid1 = displayio.TileGrid(self.__bitmap, pixel_shader=palette)
@@ -79,7 +80,7 @@ class BoidSimulation:
         self.init(**kwargs)
 
     def init(self, **kwargs):
-        self.__palette[self.COLOR_BOID] = self.__random_color()
+        self.__palette[self.COLOR_BOID] = self.__cycle_color()
 
         self.__count = kwargs.get("count", random.randint(50, 101))
         self.__iteration_count = kwargs.get("iterations", 500)
@@ -196,7 +197,7 @@ class BoidSimulation:
             boid.dy += (avg_dy - boid.dy) * matching_factor
 
     # Random primary color
-    def __random_color(self):
+    def __random_primary_color(self):
         color = (
             (0x0000ff if random.random() > .33 else 0) |
             (0x00ff00 if random.random() > .33 else 0) |
@@ -204,6 +205,21 @@ class BoidSimulation:
         ) or 0x00ff00
 
         return color
+
+    def __random_color(self):
+        color_set = SeasonColors.get("current")
+        color = random.choice(color_set)
+
+        return color.value
+
+    def __cycle_color(self):
+        color_set = SeasonColors.get("current")
+        color = color_set[self.__color_idx]
+
+        self.__color_idx += 1
+        self.__color_idx %= len(color_set)
+
+        return color.value
 
     def add(self, loc: tuple = None):
         # Add a new Boid
@@ -272,4 +288,3 @@ class BoidSimulation:
         for _ in range(self.__iteration_count):
             self.display()
             self.tick()
-            # time.sleep(self.__delay)

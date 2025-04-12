@@ -4,13 +4,20 @@ MashUp of Boids & GameOfLife
 Alternate between the Boids and the GameOfLife simulations
 """
 import random
+import os
 import time
 
+from chronos import Chronos
+from my_wifi import MyWiFi
 from led_matrix import LEDMatrix
+
 from boids.boids import BoidSimulation
 from game_of_life.life import GameOfLife
 
-matrix = LEDMatrix(64, 64, tile_across=1, tile_down=1, bit_depth=1)
+MyWiFi.autoconnect()
+Chronos.sync(tz_offset=os.getenv("time.tz_offset"))
+
+matrix = LEDMatrix(64, 64, tile_across=1, tile_down=1, bit_depth=4)
 
 BOIDS_MAX_ITER = 1000
 boids = BoidSimulation(matrix.display)
