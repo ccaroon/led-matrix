@@ -47,7 +47,8 @@ Chronos.sync(tz_offset=os.getenv("time.tz_offset"))
 # Chronos.is_dst()
 
 matrix = LEDMatrix(
-    MATRIX["width"], MATRIX["height"],
+    MATRIX["width"],
+    MATRIX["height"],
     tile_across=MATRIX["tile_across"],
     tile_down=1,
     bit_depth=4,

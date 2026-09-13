@@ -89,8 +89,10 @@ class DigitalClock(Panel):
         if now.tm_min != self.__curr_min:
             self.__curr_min = now.tm_min
             self._draw_string(
-                self.MIN_X, self.TIME_Y,
-                f"{now.tm_min:02d}", color_set[1],
+                self.MIN_X,
+                self.TIME_Y,
+                f"{now.tm_min:02d}",
+                color_set[1],
             )
 
         # Seconds (around border)

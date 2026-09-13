@@ -49,7 +49,10 @@ class WeatherPanel(Panel):
         self.__aio = AdafruitIO(
             MyWiFi.REQUESTS,
             "weather-station",
-            { "username": os.getenv("aio.username"), "key": os.getenv("aio.key")},
+            {
+                "username": os.getenv("aio.username"),
+                "key": os.getenv("aio.key"),
+            },
         )
 
     def __get_data(self, name):

@@ -1,3 +1,4 @@
+# fmt: off
 EARTH = (
     3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
     3, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 3,
@@ -76,10 +77,11 @@ DURHAM = (
     2, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2,
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 )
+# fmt: on
 
 ICONS = {
     "Earth": EARTH,
     "The USA": USA,
     "North Carolina": NORTH_CAROLINA,
-    "Durham": DURHAM
+    "Durham": DURHAM,
 }

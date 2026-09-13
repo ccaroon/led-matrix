@@ -42,7 +42,7 @@ class Glyph:
             px_data = {
                 "x": loc[1],
                 "y": loc[0],
-                "on":  True if pixels[idx] == 1 else False,
+                "on": True if pixels[idx] == 1 else False,
             }
 
             data.append(px_data)

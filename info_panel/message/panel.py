@@ -36,7 +36,8 @@ class MessagePanel(Panel):
         self.__msg_func = kwargs.get("msg_func", lambda: Chronos.motd())
 
         super().__init__(
-            x, y,
+            x,
+            y,
             palette,
             width=width,
             scale=scale,

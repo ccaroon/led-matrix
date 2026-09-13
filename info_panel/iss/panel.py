@@ -15,31 +15,34 @@ class ISSPanel(Panel):
         super().__init__(x, y, BasicColors.palette(), scale=scale)
 
         durham = GPSArea.from_file(
-            "info_panel/iss/data/durham.coords", reverse=True,
+            "info_panel/iss/data/durham.coords",
+            reverse=True,
         )
         nc = GPSArea.from_file(
-            "info_panel/iss/data/nc.coords", reverse=True,
+            "info_panel/iss/data/nc.coords",
+            reverse=True,
         )
         usa = GPSArea.from_file(
-            "info_panel/iss/data/usa.coords", reverse=True,
+            "info_panel/iss/data/usa.coords",
+            reverse=True,
         )
 
         # NOTE: names here must match ICONS names
         self.__places = (
             {
-                'name': "The USA",
-                'color': BasicColors.get("white"),
-                'area': usa,
+                "name": "The USA",
+                "color": BasicColors.get("white"),
+                "area": usa,
             },
             {
-                'name': "North Carolina",
-                'color': BasicColors.get("blue"),
-                'area': nc,
+                "name": "North Carolina",
+                "color": BasicColors.get("blue"),
+                "area": nc,
             },
             {
-                'name': "Durham",
-                'color': BasicColors.get("green"),
-                'area': durham,
+                "name": "Durham",
+                "color": BasicColors.get("green"),
+                "area": durham,
             },
         )
         self.__last_place = self.__places[0]
@@ -55,8 +58,8 @@ class ISSPanel(Panel):
             if resp.status_code == 200:
                 data = resp.json()
                 iss_coords = (
-                    float(data['iss_position']['latitude']),
-                    float(data['iss_position']['longitude']),
+                    float(data["iss_position"]["latitude"]),
+                    float(data["iss_position"]["longitude"]),
                 )
                 # Check list of places
                 curr_place = None
@@ -103,8 +106,10 @@ class ISSPanel(Panel):
             center = self._find_center(length, 5)
             self._border(BasicColors.get("red"))
             self._draw_string(
-                center[0], center[1],
-                msg, BasicColors.get("red"),
+                center[0],
+                center[1],
+                msg,
+                BasicColors.get("red"),
                 spacing=1,
             )
             print(exp)
