@@ -8,6 +8,7 @@ from lib.colors.holiday import Holiday as HolidayColors
 from lib.colors.season import Season as SeasonColors
 from lib.chronos import Chronos
 
+
 class MessagePanel(Panel):
     UPDATE_INTERVAL = 5 * 60
 
@@ -38,7 +39,7 @@ class MessagePanel(Panel):
             x, y,
             palette,
             width=width,
-            scale=scale
+            scale=scale,
         )
 
         self.__curr_msg = None
@@ -53,7 +54,7 @@ class MessagePanel(Panel):
             diff = 2 if diff == 0 else diff
             new_line = line[0:-diff] + "•"
 
-        return(new_line)
+        return new_line
 
     def _update_display(self):
         color_set = HolidayColors.get("current")
@@ -67,7 +68,7 @@ class MessagePanel(Panel):
             self._clear(HolidayColors.BLACK)
             self.__curr_msg = msg
 
-        clr_idx = random.randint(0,3)
+        clr_idx = random.randint(0, 3)
         self._border(color_set[clr_idx])
         clr_idx += 1
         if clr_idx >= len(color_set):
@@ -98,20 +99,14 @@ class MessagePanel(Panel):
         for idx, line in enumerate(lines):
             msg_line = self.__truncate_line(line)
             msg_len = self._strlen(msg_line, self.SPACING)
-            center = self._find_center(msg_len,0)
+            center = self._find_center(msg_len, 0)
             x = center[0]
-            y = self.BORDER_WIDTH + self.__top_pad + (idx*self.GLYPH_H) + (idx*2)
+            y = self.BORDER_WIDTH + self.__top_pad + (idx * self.GLYPH_H) + (idx * 2)
             # print(f"msg_len: {msg_len}, x: {x}, y: {y}")
             self._draw_string(x, y, msg_line, color_set[clr_idx], spacing=self.SPACING)
             clr_idx += 1
             if clr_idx >= len(color_set):
                 clr_idx = 0
-
-
-
-
-
-
 
 
 #

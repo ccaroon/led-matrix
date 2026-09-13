@@ -4,12 +4,14 @@ from info_panel.panel import Panel
 from lib.colors.holiday import Holiday as HolidayColors
 from lib.colors.season import Season as SeasonColors
 
+
 class BinaryClock(Panel):
     UPDATE_INTERVAL = 1
 
     # Pixel Locations - as X,Y tuples
     # Each X,Y represents the top-left corner of a 2x2 pixel
     # ...with 1 pixel width between each 2x2 block
+    # fmt: off
     HOUR_PIXELS = [
         (
             (1,2),
@@ -54,15 +56,16 @@ class BinaryClock(Panel):
             (13,11)
         )
     ]
+    # fmt: on
 
     def __init__(self, x, y, scale=1):
         palette = HolidayColors.palette()
         palette.add_colors(SeasonColors.colors())
         super().__init__(x, y, palette, scale=scale)
 
-        self.__curr_day  = None
+        self.__curr_day = None
         self.__curr_hour = None
-        self.__curr_min  = None
+        self.__curr_min = None
 
     def __set_number(self, number, pixel_set, on_color):
         # 1. split into digits
@@ -87,10 +90,10 @@ class BinaryClock(Panel):
                 y = pixel_set[digit][idx][1]
                 color_idx = self._palette.from_color(color)
 
-                self._bitmap[x,   y]   = color_idx
-                self._bitmap[x+1, y]   = color_idx
-                self._bitmap[x,   y+1] = color_idx
-                self._bitmap[x+1, y+1] = color_idx
+                self._bitmap[x, y] = color_idx
+                self._bitmap[x + 1, y] = color_idx
+                self._bitmap[x, y + 1] = color_idx
+                self._bitmap[x + 1, y + 1] = color_idx
 
     def _update_display(self):
         now = time.localtime()
@@ -111,19 +114,10 @@ class BinaryClock(Panel):
 
         if now.tm_min != self.__curr_min:
             self.__curr_min = now.tm_min
-            self.__set_number(now.tm_min,  self.MINUTE_PIXELS, color_set[1])
+            self.__set_number(now.tm_min, self.MINUTE_PIXELS, color_set[1])
 
         # Always update the seconds since UPDATE_INTERVAL is 1 sec anyway
-        self.__set_number(now.tm_sec,  self.SECOND_PIXELS, color_set[2])
-
-
-
-
-
-
-
-
-
+        self.__set_number(now.tm_sec, self.SECOND_PIXELS, color_set[2])
 
 
 #

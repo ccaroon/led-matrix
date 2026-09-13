@@ -6,8 +6,8 @@ import displayio
 # from lib.colors.color_factory import ColorFactory
 from info_panel.glyph import Glyph
 
-class Panel(displayio.Group):
 
+class Panel(displayio.Group):
     # Update interval
     UPDATE_INTERVAL = 5 * 60  # 5 mins
 
@@ -24,7 +24,7 @@ class Panel(displayio.Group):
         self._bitmap = displayio.Bitmap(width, height, self._palette.num_colors)
         grid = displayio.TileGrid(
             self._bitmap,
-            pixel_shader=self._palette.dio_palette
+            pixel_shader=self._palette.dio_palette,
         )
         self.append(grid)
         self.__last_update = 0
@@ -33,13 +33,13 @@ class Panel(displayio.Group):
         color_idx = self._palette.from_color(color)
         # Top/Bottom
         for x in range(0, self._bitmap.width):
-            self._bitmap[x,0] = color_idx
-            self._bitmap[x, self._bitmap.height-1] = color_idx
+            self._bitmap[x, 0] = color_idx
+            self._bitmap[x, self._bitmap.height - 1] = color_idx
 
         # Left/Right
         for y in range(0, self._bitmap.height):
             self._bitmap[0, y] = color_idx
-            self._bitmap[self._bitmap.width-1, y] = color_idx
+            self._bitmap[self._bitmap.width - 1, y] = color_idx
 
     def _clear(self, color):
         color_idx = self._palette.from_color(color)
@@ -47,25 +47,25 @@ class Panel(displayio.Group):
             self._bitmap[i] = color_idx
 
     def _find_center(self, width, height):
-        """" Given width & height, find (x,y) to center on display """
+        """ " Given width & height, find (x,y) to center on display"""
         x = (self._bitmap.width // 2) - (width // 2)
         y = (self._bitmap.height // 2) - (height // 2)
 
-        return (x,y)
+        return (x, y)
 
     def _seed_randomly(self, color, percent=50):
         width = self._bitmap.width
         height = self._bitmap.height
         color_idx = self._palette.from_color(color)
 
-        count = int(width * height * (percent/100))
+        count = int(width * height * (percent / 100))
         for _ in range(count):
-            x = random.randint(0, width-1)
-            y = random.randint(0, height-1)
-            self._bitmap[x,y] = color_idx
+            x = random.randint(0, width - 1)
+            y = random.randint(0, height - 1)
+            self._bitmap[x, y] = color_idx
 
     def _strlen(self, msg, spacing=0):
-        """ Return length of the msg/str in pixels """
+        """Return length of the msg/str in pixels"""
         # Assumes mono-spaced "font"
         glyph = Glyph.get(msg[0])
         length = len(msg) * (glyph.width + spacing)
@@ -91,7 +91,7 @@ class Panel(displayio.Group):
         color_idx = self._palette.from_color(color)
         for data in glyph:
             palette_idx = color_idx if data["on"] else blk_idx
-            self._bitmap[data["x"]+x, data["y"]+y] = palette_idx
+            self._bitmap[data["x"] + x, data["y"] + y] = palette_idx
 
     def _update_display(self):
         raise NotImplementedError("Subclasses Must Implement")

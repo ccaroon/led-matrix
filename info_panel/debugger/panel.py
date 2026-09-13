@@ -6,8 +6,9 @@ from info_panel.panel import Panel
 
 from lib.colors.season import Season as SeasonColors
 
+
 class DebugPanel(Panel):
-    UPDATE_INTERVAL = 5 #2.5 * 60
+    UPDATE_INTERVAL = 5  # 2.5 * 60
 
     def __init__(self, x, y, scale=1):
         super().__init__(x, y, SeasonColors.palette(), scale=scale)
@@ -31,7 +32,7 @@ class DebugPanel(Panel):
         x_pos = {
             1: 7,
             2: 4,
-            3: 3
+            3: 3,
         }
         color_set = set(self.__colors)
 
@@ -43,22 +44,17 @@ class DebugPanel(Panel):
         msg = random.choice(msgs)
 
         # Clear Msg area
-        self._draw_string(3, 5, " "*4, SeasonColors.BLACK)
+        self._draw_string(3, 5, " " * 4, SeasonColors.BLACK)
 
         x = x_pos.get(len(msg), 3)
         self._draw_string(x, 5, msg, color2, spacing=1)
 
     def __counter(self):
         msg = self.__count % 9999
-        self._draw_string(2, 5,
-            f"{msg:04d}",
-            self.__colors[0]
-        )
+        self._draw_string(2, 5, f"{msg:04d}", self.__colors[0])
         self.__count += 1
 
     def __random(self):
-
-
         self._clear(SeasonColors.BLACK)
         # Border
         # color = random.choice(list(color_set))

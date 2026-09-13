@@ -4,15 +4,16 @@ from info_panel.panel import Panel
 from lib.colors.holiday import Holiday as HolidayColors
 from lib.colors.season import Season as SeasonColors
 
+
 class DigitalClock(Panel):
     UPDATE_INTERVAL = 1
 
     GLYPH_W = 3
-    HOUR_X  = 0
+    HOUR_X = 0
     # -1 b/c HOUR first digit is only ever '1' so save a col of pixel on the left
-    SEP_X   = (GLYPH_W * 2)
-    MIN_X   = (GLYPH_W * 3)
-    TIME_Y  = 3
+    SEP_X = GLYPH_W * 2
+    MIN_X = GLYPH_W * 3
+    TIME_Y = 3
     AM_PM_X = 4
     AM_PM_Y = TIME_Y + 6
 
@@ -22,7 +23,7 @@ class DigitalClock(Panel):
         super().__init__(x, y, palette, scale=scale)
 
         self.__curr_hour = None
-        self.__curr_min  = None
+        self.__curr_min = None
         self.__curr_ampm = None
 
     # TODO: optimize -> only change pixels that need to be changed
@@ -35,21 +36,21 @@ class DigitalClock(Panel):
 
         # Top | x = 0 -> 15
         for x in range(0, self._bitmap.width):
-            self._bitmap[x,0] = color_on_idx if count <= secs else color_off_idx
+            self._bitmap[x, 0] = color_on_idx if count <= secs else color_off_idx
             count += 1
 
         # Right | y = 1 -> 15
         for y in range(1, self._bitmap.height):
-            self._bitmap[self._bitmap.width-1, y] = color_on_idx if count <= secs else color_off_idx
+            self._bitmap[self._bitmap.width - 1, y] = color_on_idx if count <= secs else color_off_idx
             count += 1
 
         # Bottom | x = 14 -> 0
-        for x in range(self._bitmap.width-2, -1, -1):
-            self._bitmap[x, self._bitmap.height-1] = color_on_idx if count <= secs else color_off_idx
+        for x in range(self._bitmap.width - 2, -1, -1):
+            self._bitmap[x, self._bitmap.height - 1] = color_on_idx if count <= secs else color_off_idx
             count += 1
 
         # Left | y = 14 -> 1
-        for y in range(self._bitmap.height-2, 0, -1):
+        for y in range(self._bitmap.height - 2, 0, -1):
             self._bitmap[0, y] = color_on_idx if count <= secs else color_off_idx
             count += 1
 
@@ -71,8 +72,10 @@ class DigitalClock(Panel):
             self.__curr_hour = now.tm_hour
             hour = now.tm_hour - 12 if now.tm_hour > 12 else now.tm_hour
             self._draw_string(
-                self.HOUR_X, self.TIME_Y,
-                f"{hour:2d}", color_set[0],
+                self.HOUR_X,
+                self.TIME_Y,
+                f"{hour:2d}",
+                color_set[0],
             )
 
         # Colon Separator - Blink on/off with seconds
@@ -87,7 +90,7 @@ class DigitalClock(Panel):
             self.__curr_min = now.tm_min
             self._draw_string(
                 self.MIN_X, self.TIME_Y,
-                f"{now.tm_min:02d}", color_set[1]
+                f"{now.tm_min:02d}", color_set[1],
             )
 
         # Seconds (around border)
@@ -98,13 +101,6 @@ class DigitalClock(Panel):
         if meridiem != self.__curr_ampm:
             self.__curr_ampm = meridiem
             self.__draw_am_pm(now.tm_hour, color_set[3])
-
-
-
-
-
-
-
 
 
 #

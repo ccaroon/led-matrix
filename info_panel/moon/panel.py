@@ -5,6 +5,7 @@ from info_panel.panel import Panel
 
 import info_panel.moon.astro as astro
 
+
 class MoonPanel(Panel):
     UPDATE_INTERVAL = 60 * 60
 
@@ -21,17 +22,10 @@ class MoonPanel(Panel):
             now.tm_year,
             now.tm_mon,
             now.tm_mday,
-            now.tm_hour
+            now.tm_hour,
         )
         print(f"[{moon_illum:.2f}] - {now.tm_year}/{now.tm_mon}/{now.tm_mday} @ {now.tm_hour}")
         self._draw_string(2, 5, f"{moon_illum:.1f}%", ColorFactory.get("white"))
-
-
-
-
-
-
-
 
 
 #

@@ -1,5 +1,6 @@
 import math
 
+
 class GPSArea:
     # pts - list of tuples; each tuple == (lat, lng)
     def __init__(self, pts):
@@ -42,13 +43,13 @@ class GPSArea:
         theta2 = math.atan2(y2, x2)
         dtheta = theta2 - theta1
 
-        while (dtheta > math.pi):
-            dtheta -= (math.pi * 2)
+        while dtheta > math.pi:
+            dtheta -= math.pi * 2
 
-        while (dtheta < -math.pi):
-            dtheta += (math.pi * 2)
+        while dtheta < -math.pi:
+            dtheta += math.pi * 2
 
-        return (dtheta)
+        return dtheta
 
     def __str__(self):
         return "[%f, %f]" % (self.__latitudes[0], self.__longitudes[0])
@@ -59,12 +60,12 @@ class GPSArea:
         with open(filename, "r") as file:
             coords = []
             for line in file:
-                (lat, lng) = line.rstrip().split(',', 2)
+                (lat, lng) = line.rstrip().split(",", 2)
                 if reverse:
                     (lng, lat) = (lat, lng)
                 coords.append((float(lat), float(lng)))
 
-        return (cls(coords))
+        return cls(coords)
 
     @staticmethod
     def is_valid_coordinate(latitude, longitude):

@@ -20,4 +20,3 @@ requirements:
   - adafruit_portalbase
   - adafruit_requests.mpy
   - neopixel.mpy
-  # - CircuitPython_Community_Bundle/ifttt.mpy

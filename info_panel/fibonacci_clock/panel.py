@@ -22,6 +22,7 @@ class FibonacciClock(Panel):
     # For each box...
     # ...the box size (size X size)
     # ...the offset from the top-left corner of clock
+    # fmt: off
     BOX_INFO = {
         ONE: {
             "size": 1,
@@ -50,40 +51,34 @@ class FibonacciClock(Panel):
         (
             (OFF, OFF, OFF, OFF, OFF),
         ),
-
         # ONE =>  1 | 1`
         (
             (ONE,       OFF, OFF, OFF, OFF),
             (ONE_PRIME, OFF, OFF, OFF, OFF),
         ),
-
         # TWO => 1,1` | 2
         (
             (ONE, ONE_PRIME, OFF, OFF, OFF),
             (TWO, OFF, OFF, OFF, OFF),
         ),
-
         # THREE => 1,2 | 1`,2 | 3
         (
             (ONE, TWO, OFF, OFF, OFF),
             (ONE_PRIME, TWO, OFF, OFF, OFF),
             (THREE, OFF, OFF, OFF, OFF),
         ),
-
         # FOUR => 1,3 | 1`,3 | 1,1`,2
         (
             (ONE, THREE, OFF, OFF, OFF),
             (ONE_PRIME, THREE, OFF, OFF, OFF),
             (ONE, ONE_PRIME, TWO, OFF, OFF),
         ),
-
         # FIVE => 1,1`,3 | 2,3 | 5
         (
             (ONE, ONE_PRIME, THREE, OFF, OFF),
             (TWO, THREE, OFF, OFF, OFF),
             (FIVE, OFF, OFF, OFF, OFF),
         ),
-
         # SIX =>  1,5 | 1`,5 | 1,2,3 | 1`,2,3
         (
             (ONE, FIVE, OFF, OFF, OFF),
@@ -91,44 +86,39 @@ class FibonacciClock(Panel):
             (ONE, TWO, THREE, OFF, OFF),
             (ONE_PRIME, TWO, THREE, OFF, OFF),
         ),
-
         # SEVEN => 2,5 | 1,1`,2,3
         (
             (TWO, FIVE,      OFF, OFF,   OFF),
             (ONE, ONE_PRIME, TWO, THREE, OFF),
         ),
-
         # EIGHT => 3,5 | 1,2,5 | 1`,2,5
         (
             (THREE, FIVE, OFF, OFF, OFF),
             (ONE, TWO, FIVE, OFF, OFF),
             (ONE_PRIME, TWO, FIVE, OFF, OFF),
         ),
-
         # NINE => 1,1`,2,5 | 1,3,5 | 1`,3,5
         (
             (ONE, ONE_PRIME, TWO, FIVE, OFF),
             (ONE, THREE, FIVE, OFF, OFF),
             (ONE_PRIME, THREE, FIVE, OFF, OFF),
         ),
-
         # TEN => 2,3,5 | 1,1`,3,5
         (
             (TWO, THREE, FIVE, OFF, OFF),
             (ONE, ONE_PRIME, THREE, FIVE, OFF),
         ),
-
         # ELEVEN => 1,2,3,5 | 1`,2,3,5
         (
             (ONE, TWO, THREE, FIVE, OFF),
             (ONE_PRIME, TWO, THREE, FIVE, OFF),
         ),
-
         # TWELVE => 1,1`,2,3,5
         (
             (ONE, ONE_PRIME, TWO, THREE, FIVE),
         )
     )
+    # fmt: on
 
     BLACK = SeasonColors.BLACK
 
@@ -187,7 +177,7 @@ class FibonacciClock(Panel):
             self.ONE_PRIME: 0,
             self.TWO: 0,
             self.THREE: 0,
-            self.FIVE: 0
+            self.FIVE: 0,
         }
 
         # Set box colors for hours
@@ -201,5 +191,5 @@ class FibonacciClock(Panel):
                 box_colors[box] += self.COLOR_MINUTES
 
         for box_name, cs_idx in box_colors.items():
-            color = self.BLACK if cs_idx == 0 else color_set[cs_idx-1]
+            color = self.BLACK if cs_idx == 0 else color_set[cs_idx - 1]
             self.__draw_box(box_name, color)

@@ -7,6 +7,7 @@ from info_panel.panel import Panel
 from my_wifi import MyWiFi
 from aio import AdafruitIO
 
+
 # TODO:
 # * [x] old data
 # * [ ] data retrieval error
@@ -17,6 +18,7 @@ class Reading:
     name = None
     value = None
     age = None
+
     def __init__(self, name, value, age):
         self.name = name
         self.value = value
@@ -27,13 +29,15 @@ class Reading:
 
     def __str__(self):
         return f"{self.name}: {self.value} ({self.age} sec)"
+
+
 # -----------------------------------------------------------------------------
 class WeatherPanel(Panel):
     # Update interval
     UPDATE_INTERVAL = 5 * 60  # 5 mins
-    OLD_INTERVAL    = 10 * 60 # 10 mins
+    OLD_INTERVAL = 10 * 60  # 10 mins
     # 200 degrees -> "really_hot" => RED
-    ERROR_COLOR     = WeatherColors.from_temp(200)
+    ERROR_COLOR = WeatherColors.from_temp(200)
 
     GLYPH_W = alpha_num.WIDTH
     CURR_Y = 1
@@ -45,7 +49,7 @@ class WeatherPanel(Panel):
         self.__aio = AdafruitIO(
             MyWiFi.REQUESTS,
             "weather-station",
-            { "username": os.getenv("aio.username"), "key": os.getenv("aio.key")}
+            { "username": os.getenv("aio.username"), "key": os.getenv("aio.key")},
         )
 
     def __get_data(self, name):
@@ -55,7 +59,7 @@ class WeatherPanel(Panel):
             reading = Reading(
                 name,
                 int(resp["results"][0]["value"]),
-                resp["age"]
+                resp["age"],
             )
         return reading
 
@@ -65,7 +69,7 @@ class WeatherPanel(Panel):
 
         # Compute line length
         # 7 levels = 100/7 == 14.286 * 2 lights / level
-        line_len =  ((value // 14.286) + 1) * 2
+        line_len = ((value // 14.286) + 1) * 2
         # print(f"line_len: [{line_len}]")
 
         # Get color
@@ -76,12 +80,12 @@ class WeatherPanel(Panel):
         start_x = int((self._bitmap.width // 2) - (line_len // 2))
         end_x = start_x + int(line_len)
         line = range(start_x, end_x)
-        for x in range(1, self._bitmap.width-1):
+        for x in range(1, self._bitmap.width - 1):
             # print(f"[x,y] = [{x},7]")
             if x in line:
-                self._bitmap[x,7] = color_idx
+                self._bitmap[x, 7] = color_idx
             else:
-                self._bitmap[x,7] = black_idx
+                self._bitmap[x, 7] = black_idx
 
     def _update_display(self):
         # => Current Temperature
@@ -90,7 +94,7 @@ class WeatherPanel(Panel):
         # print(f"{reading.value} - {reading.age} > {self.OLD_INTERVAL} ({color})")
 
         # center it on x
-        x = (self._bitmap.width // 2) - ((self.GLYPH_W*3) // 2)
+        x = (self._bitmap.width // 2) - ((self.GLYPH_W * 3) // 2)
         curr_temp = reading.value % 100
         self._draw_string(x, self.CURR_Y, f"{curr_temp:02d}°", color, spacing=1)
 
@@ -113,21 +117,13 @@ class WeatherPanel(Panel):
             # x == right edge - width of 2 glyphs
             (self._bitmap.width - 1) - (self.GLYPH_W * 2),
             self.HILO_Y,
-            f"{high_temp:02d}", color
+            f"{high_temp:02d}",
+            color,
         )
 
         # => Humidity
         reading = self.__get_data("humidity")
         self.__draw_humidity(reading.value)
-
-
-
-
-
-
-
-
-
 
 
 #

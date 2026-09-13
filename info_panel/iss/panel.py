@@ -7,6 +7,7 @@ from info_panel.panel import Panel
 import info_panel.iss.icons as Icons
 from info_panel.iss.gps_area import GPSArea
 
+
 class ISSPanel(Panel):
     UPDATE_INTERVAL = 10
 
@@ -14,13 +15,13 @@ class ISSPanel(Panel):
         super().__init__(x, y, BasicColors.palette(), scale=scale)
 
         durham = GPSArea.from_file(
-            "info_panel/iss/data/durham.coords", reverse=True
+            "info_panel/iss/data/durham.coords", reverse=True,
         )
         nc = GPSArea.from_file(
-            "info_panel/iss/data/nc.coords", reverse=True
+            "info_panel/iss/data/nc.coords", reverse=True,
         )
         usa = GPSArea.from_file(
-            "info_panel/iss/data/usa.coords", reverse=True
+            "info_panel/iss/data/usa.coords", reverse=True,
         )
 
         # NOTE: names here must match ICONS names
@@ -28,18 +29,18 @@ class ISSPanel(Panel):
             {
                 'name': "The USA",
                 'color': BasicColors.get("white"),
-                'area': usa
+                'area': usa,
             },
             {
                 'name': "North Carolina",
                 'color': BasicColors.get("blue"),
-                'area': nc
+                'area': nc,
             },
             {
                 'name': "Durham",
                 'color': BasicColors.get("green"),
-                'area': durham
-            }
+                'area': durham,
+            },
         )
         self.__last_place = self.__places[0]
 
@@ -55,13 +56,13 @@ class ISSPanel(Panel):
                 data = resp.json()
                 iss_coords = (
                     float(data['iss_position']['latitude']),
-                    float(data['iss_position']['longitude'])
+                    float(data['iss_position']['longitude']),
                 )
                 # Check list of places
                 curr_place = None
                 for place in self.__places:
                     # print(f"Checking '{place['name']}' [{place['color']}]")
-                    if place['area'].contains(iss_coords):
+                    if place["area"].contains(iss_coords):
                         curr_place = place
 
                 # Display results
@@ -70,12 +71,12 @@ class ISSPanel(Panel):
                     self.__last_place = curr_place
                     if curr_place:
                         self.__draw_icon(
-                            Icons.ICONS.get(curr_place['name']),
+                            Icons.ICONS.get(curr_place["name"]),
                             (
                                 self._palette.from_name("black"),
-                                self._palette.from_color(curr_place['color']),
-                                self._palette.from_color(curr_place['color']),
-                            )
+                                self._palette.from_color(curr_place["color"]),
+                                self._palette.from_color(curr_place["color"]),
+                            ),
                         )
                         print(f"{Chronos.datetime_str()} - The ISS is currently over {curr_place['name']}.")
                     else:
@@ -86,17 +87,15 @@ class ISSPanel(Panel):
                                 self._palette.from_name("blue"),
                                 self._palette.from_name("green"),
                                 self._palette.from_name("white"),
-                            )
+                            ),
                         )
                         iss_pt = random.randint(1, self._bitmap.width * self._bitmap.height)
-                        self._bitmap[iss_pt-1] = self._palette.from_name("white")
+                        self._bitmap[iss_pt - 1] = self._palette.from_name("white")
 
                         # print("The ISS is NOT overhead right now.")
                         # print(f"https://www.google.com/maps/search/{iss_coords[0]},+{iss_coords[1]}/@{iss_coords[0]},{iss_coords[1]},4z")
             else:
-                raise RuntimeError(
-                    f"Request Error: Status [{resp.status_code}] | {resp.content}"
-                )
+                raise RuntimeError(f"Request Error: Status [{resp.status_code}] | {resp.content}")
         except Exception as exp:
             self.__last_place = ""
             msg = "Err"
@@ -106,10 +105,9 @@ class ISSPanel(Panel):
             self._draw_string(
                 center[0], center[1],
                 msg, BasicColors.get("red"),
-                spacing=1
+                spacing=1,
             )
             print(exp)
-
 
 
 #

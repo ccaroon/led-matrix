@@ -16,14 +16,14 @@ MATRICES = {
         "width": 64,
         "height": 32,
         "scale": 1,
-        "tile_across": 1
+        "tile_across": 1,
     },
     "large": {
         "width": 64,
         "height": 64,
         "scale": 2,
-        "tile_across": 2
-    }
+        "tile_across": 2,
+    },
 }
 MATRIX = MATRICES["large"]
 
@@ -50,7 +50,7 @@ matrix = LEDMatrix(
     MATRIX["width"], MATRIX["height"],
     tile_across=MATRIX["tile_across"],
     tile_down=1,
-    bit_depth=4
+    bit_depth=4,
 )
 display = matrix.display
 
@@ -97,6 +97,7 @@ day_of_week = MessagePanel(
     msg_func=lambda: Chronos.day_of_week(),
     scale=MATRIX["scale"],
 )
+
 
 ## Date / Message of the Day
 pos = panel_pos(PANEL_LAYOUT["DatePanel"])
@@ -157,12 +158,15 @@ ON_TIME = 900
 OFF_TIME = 2330
 IS_ON = True
 
+
 def in_on_window(time_code):
     return time_code >= ON_TIME and time_code < OFF_TIME
+
 
 def time_code():
     now = time.localtime()
     return (now.tm_hour * 100) + now.tm_min
+
 
 display.auto_refresh = False
 while True:
