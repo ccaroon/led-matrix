@@ -11,22 +11,33 @@ from lib.chronos import Chronos
 class MessagePanel(Panel):
     UPDATE_INTERVAL = 5 * 60
 
-    WIDTH = 48
-    HEIGHT = 16
+    BORDER_WIDTH = 2
     GLYPH_W = alpha_num.WIDTH
     GLYPH_H = alpha_num.HEIGHT
     NUM_LINES = 2
     SPACING = 1
-    # -2 -> 1 pixel on each side for the border
-    MAX_LINE_LEN = WIDTH - 2
+    MAX_LINE_LEN = None
 
-    def __init__(self, x, y, scale=1):
+    def __init__(self, x, y, **kwargs):
         palette = HolidayColors.palette()
         palette.add_colors(SeasonColors.colors())
+
+        scale = kwargs.get("scale", 1)
+        # Number of panels to use
+        width_mlt = kwargs.get("width", 1)
+        width = Panel.DEFAULT_WIDTH * width_mlt
+
+        self.__top_pad = kwargs.get("top_padding", 0)
+
+        # -2 -> 1 pixel on each side for the border
+        self.MAX_LINE_LEN = width - 2
+
+        self.__msg_func = kwargs.get("msg_func", lambda: Chronos.motd())
+
         super().__init__(
             x, y,
             palette,
-            width=self.WIDTH, height=self.HEIGHT,
+            width=width,
             scale=scale
         )
 
@@ -49,7 +60,7 @@ class MessagePanel(Panel):
         if not color_set:
             color_set = SeasonColors.get("current")
 
-        msg = Chronos.motd()
+        msg = self.__msg_func()
         lines = []
 
         if msg != self.__curr_msg:
@@ -89,7 +100,7 @@ class MessagePanel(Panel):
             msg_len = self._strlen(msg_line, self.SPACING)
             center = self._find_center(msg_len,0)
             x = center[0]
-            y = 2 + (idx*self.GLYPH_H) + (idx*2)
+            y = self.BORDER_WIDTH + self.__top_pad + (idx*self.GLYPH_H) + (idx*2)
             # print(f"msg_len: {msg_len}, x: {x}, y: {y}")
             self._draw_string(x, y, msg_line, color_set[clr_idx], spacing=self.SPACING)
             clr_idx += 1

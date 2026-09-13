@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "led-matrix"
+version = "1.0.0"
+description = 'LED Matrix Displays'
+requires-python = ">=3.14"
+keywords = []
+authors = [{ name = "Craig N. Caroon" }]
+
+dependencies = ["invoke ~= 3.0", "PyYaml ~= 6.0"]
+
+# NO artifacts to build
+[tool.hatch.build.targets.sdist]
+exclude = ["*"]
+
+[tool.hatch.build.targets.wheel]
+include = ["*"]
+exclude = ["*"]

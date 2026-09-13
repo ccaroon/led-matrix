@@ -20,7 +20,17 @@ class Chronos:
         {"short": "Sep", "long": "September"},
         {"short": "Oct", "long": "October"},
         {"short": "Nov", "long": "November"},
-        {"short": "Dec", "long": "December"}
+        {"short": "Dec", "long": "December"},
+    )
+
+    DAYS = (
+        {"short": "Mon", "long": "Monday"},
+        {"short": "Tue", "long": "Tuesday"},
+        {"short": "Wed", "long": "Wednesday"},
+        {"short": "Thu", "long": "Thursday"},
+        {"short": "Fri", "long": "Friday"},
+        {"short": "Sat", "long": "Saturday"},
+        {"short": "Sun", "long": "Sunday"},
     )
 
     # HINT: 11 chars per line for 48 pixel LED
@@ -66,6 +76,15 @@ class Chronos:
             tdata = time.localtime()
             print(f"{tdata.tm_year}-{tdata.tm_mon}-{tdata.tm_mday} {tdata.tm_hour}:{tdata.tm_min}:{tdata.tm_sec}")
             time.sleep(1)
+
+    @classmethod
+    def day_of_week(cls, short=True):
+        now = time.localtime()
+        day_len = "short" if short else "long"
+
+        dow = cls.DAYS[now.tm_wday][day_len]
+
+        return dow
 
     @classmethod
     def datetime_str(cls, seconds=None):

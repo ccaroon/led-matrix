@@ -11,8 +11,14 @@ class Panel(displayio.Group):
     # Update interval
     UPDATE_INTERVAL = 5 * 60  # 5 mins
 
-    def __init__(self, x, y, palette, width=16, height=16, **kwargs):
+    DEFAULT_WIDTH = 16
+    DEFAULT_HEIGHT = 16
+
+    def __init__(self, x, y, palette, **kwargs):
         super().__init__(x=x, y=y, scale=kwargs.get("scale", 1))
+
+        width = kwargs.get("width", self.DEFAULT_WIDTH)
+        height = kwargs.get("height", self.DEFAULT_HEIGHT)
 
         self._palette = palette
         self._bitmap = displayio.Bitmap(width, height, self._palette.num_colors)

@@ -1,4 +1,5 @@
 import random
+import time
 
 from info_panel.panel import Panel
 # from info_panel.glyph import Glyph
@@ -6,23 +7,26 @@ from info_panel.panel import Panel
 from lib.colors.season import Season as SeasonColors
 
 class DebugPanel(Panel):
-    UPDATE_INTERVAL = 2.5 * 60
+    UPDATE_INTERVAL = 5 #2.5 * 60
 
     def __init__(self, x, y, scale=1):
         super().__init__(x, y, SeasonColors.palette(), scale=scale)
 
         self.__colors = SeasonColors.get("current")
+        self.__color_idx = 0
         self.__count = 0
 
-    def _update_display(self):
-        # print(f"Debugger -> {self.__count}")
-        # msg = self.__count % 9999
-        # self._draw_string(2, 5,
-        #     f"{msg:04d}",
-        #     self.__colors[0]
-        # )
-        # self.__count += 1
-        # -----
+    def __next_color(self):
+        color_count = len(self.__colors)
+
+        color = self.__colors[self.__color_idx]
+
+        self.__color_idx += 1
+        self.__color_idx %= color_count
+
+        return color
+
+    def __short_msg(self):
         msgs = ["42", "7", "CNC", "C8", "KRG", "PY", "8"]
         x_pos = {
             1: 7,
@@ -43,3 +47,31 @@ class DebugPanel(Panel):
 
         x = x_pos.get(len(msg), 3)
         self._draw_string(x, 5, msg, color2, spacing=1)
+
+    def __counter(self):
+        msg = self.__count % 9999
+        self._draw_string(2, 5,
+            f"{msg:04d}",
+            self.__colors[0]
+        )
+        self.__count += 1
+
+    def __random(self):
+
+
+        self._clear(SeasonColors.BLACK)
+        # Border
+        # color = random.choice(list(color_set))
+        color = self.__next_color()
+        self._border(color)
+
+        # Random ness stuff
+        # fill_density = random.randint(25,75)
+        now = time.localtime()
+        fill_density = int((now.tm_sec / 60) * 100)
+        self._seed_randomly(color, fill_density)
+
+    def _update_display(self):
+        # self.__counter()
+        self.__random()
+        # self.__short_msg()

@@ -34,10 +34,10 @@ from info_panel.binary_clock.panel import BinaryClock
 from info_panel.digital_clock.panel import DigitalClock
 from info_panel.debugger.panel import DebugPanel
 from info_panel.fibonacci_clock.panel import FibonacciClock
-from info_panel.iss.panel import ISSPanel
 from info_panel.message.panel import MessagePanel
-# from info_panel.moon.panel import MoonPanel
 from info_panel.weather.panel import WeatherPanel
+# from info_panel.iss.panel import ISSPanel
+# from info_panel.moon.panel import MoonPanel
 
 MyWiFi.autoconnect()
 # MyWiFi.test()
@@ -74,61 +74,81 @@ def panel_pos(idx):
 
 
 PANEL_LAYOUT = {
-    "MessagePanel": 0,  # 0,1,2 ALL taken up
-    "DigitalClock": 4,
-    "Weather": 5,
-    "BinaryClock": 3,
-    # "Debugger": 6,
+    # top row
+    "DOWPanel": 0,
+    "DatePanel": 1,
+    "DigitalClock": 3,
+    # bottom row
+    "Weather": 4,
+    "BinaryClock": 5,
     "FibonacciClock": 6,
+    "Debugger": 7,
     # "MoonPhase": 6,
-    "ISSTracker": 7
+    # "ISSTracker": 7
 }
 
-# Digital Clock
+# ----- PANELS -----
+## Day of the Week
+pos = panel_pos(PANEL_LAYOUT["DOWPanel"])
+day_of_week = MessagePanel(
+    pos[0],
+    pos[1],
+    top_padding=3,
+    msg_func=lambda: Chronos.day_of_week(),
+    scale=MATRIX["scale"],
+)
+
+## Date / Message of the Day
+pos = panel_pos(PANEL_LAYOUT["DatePanel"])
+date_msg = MessagePanel(
+    pos[0],
+    pos[1],
+    width=2,
+    scale=MATRIX["scale"],
+)
+
+## Digital Clock
 pos = panel_pos(PANEL_LAYOUT["DigitalClock"])
 digi_clock = DigitalClock(pos[0], pos[1], scale=MATRIX["scale"])
 
-# Weather
+## Weather
 pos = panel_pos(PANEL_LAYOUT["Weather"])
 weather = WeatherPanel(pos[0], pos[1], scale=MATRIX["scale"])
 
-# Binary Clock
+## Binary Clock
 pos = panel_pos(PANEL_LAYOUT["BinaryClock"])
 bin_clock = BinaryClock(pos[0], pos[1], scale=MATRIX["scale"])
 
-# Debugger
-# pos = panel_pos(PANEL_LAYOUT["Debugger"])
-# debug = DebugPanel(pos[0], pos[1])
+## Debugger
+pos = panel_pos(PANEL_LAYOUT["Debugger"])
+debug = DebugPanel(pos[0], pos[1], scale=MATRIX["scale"])
 
-# Fibonacci Clock
+## Fibonacci Clock
 pos = panel_pos(PANEL_LAYOUT["FibonacciClock"])
 fib_clock = FibonacciClock(pos[0], pos[1], scale=MATRIX["scale"])
 
-# ISS Tracker
-pos = panel_pos(PANEL_LAYOUT["ISSTracker"])
-iss = ISSPanel(pos[0], pos[1], scale=MATRIX["scale"])
+## ISS Tracker
+# Disabled 2026-09-13 b/c data feed has gone bad
+# pos = panel_pos(PANEL_LAYOUT["ISSTracker"])
+# iss = ISSPanel(pos[0], pos[1], scale=MATRIX["scale"])
 
-# Message Panel -- Takes up panels 4,5,6
-pos = panel_pos(PANEL_LAYOUT["MessagePanel"])
-# Shift X 1/2 a PANEL_WIDTH
-# mp_x = pos[0] + (PANEL_WIDTH // 2)
-message = MessagePanel(pos[0], pos[1], scale=MATRIX["scale"])
-
-# Moon Phase
+## Moon Phase
 # pos = panel_pos(PANEL_LAYOUT["MoonPhase"])
 # moon = MoonPanel(pos[0], pos[1)
 
-# Add Panels to main Display Group
-# Listed in Update Priority Order
+# ----- Install Panels -----
 main_group = displayio.Group()
-main_group.append(message)
-main_group.append(bin_clock)
+## Listed in Update Priority Order
 main_group.append(digi_clock)
+main_group.append(bin_clock)
 main_group.append(weather)
 main_group.append(fib_clock)
-main_group.append(iss)
+main_group.append(date_msg)
+main_group.append(day_of_week)
+main_group.append(debug)
+## DISABLED
+# main_group.append(iss)
 # main_group.append(moon)
-# main_group.append(debug)
 
 display.root_group = main_group
 
