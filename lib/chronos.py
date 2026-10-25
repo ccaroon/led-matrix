@@ -34,24 +34,25 @@ class Chronos:
     )
 
     # HINT: 11 chars per line for 48 pixel LED
+    # HINT: 7 chars per line for a 32 pixel LED
     HOLIDAYS = {
         100: "1234567890+ 1234567890+",
-        101: "Happy New Year",
-        126: "Happy BDay, Piper",
-        214: "Valentine's Day",
-        219: "Happy BDay, Craig",
-        316: "Cate+Craig Anniversary",
-        317: "St. Patty's Day",
-        704: "Happy July 4th",
-        818: "Happy BDay, Nathan",
-        823: "Happy BDay, Cate",
-        1025: "Happy BDay, Picasso",
-        1031: "Happy Halloween",
+        101: "A New Year",
+        126: "Piper BDay",
+        214: "St. Val Day",
+        219: "Craig BDay",
+        316: "Cate+Craig",
+        317: "St. Pat Day",
+        704: "July 4th",
+        818: "Nathan BDay",
+        823: "Cate BDay",
+        1025: "Picasso BDay",
+        1031: "Hallows Eve",
         # Not *exactly* the correct day, but close enough :)
-        1125: "Happy Thksgiving",
-        1224: "Christmas Eve",
-        1225: "Merry Christmas",
-        1231: "New Year's Eve"
+        1125: "Happy Thksgvg",
+        1224: "Chrstms Eve",
+        1225: "Merry Chrstms",
+        1231: "New Yrs Eve",
     }
 
     @classmethod
